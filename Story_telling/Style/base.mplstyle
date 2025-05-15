@@ -1,0 +1,48 @@
+### FIGURE
+figure.facecolor: white
+figure.dpi: 300
+figure.figsize: 10,6
+figure.constrained_layout.use : False
+
+### LINES
+lines.linewidth: 3
+
+### TICKS
+xtick.bottom: False
+ytick.left: False
+
+### FONTS
+font.size: 10
+# font.family: sans-serif
+# font.sans-serif: Avenir, 'Avenir Next LT Pro', Arial, Helvetica, sans-serif
+# font.weight: bold
+
+### TEXT
+text.color : "#CCCCCC"
+axes.edgecolor: "#CCCCCC"
+
+### LABEL AND TICK COLORS
+ytick.color : "#4A606C"
+xtick.color : "#4A606C"
+axes.titlecolor: "#4A606C"
+axes.labelcolor : "#4A606C"
+
+# TICK PADDING
+xtick.major.pad : 5
+ytick.major.pad : 10
+xtick.minor.pad : 4
+ytick.minor.pad : 4
+axes.labelpad: 7
+
+### AXES
+axes.linewidth: 1.0
+axes.titlesize: 14
+axes.labelsize: 10
+axes.spines.top: False
+axes.spines.right: False
+axes.labelweight: "bold"
+
+### STAPLFÄRGER (Bar Colors)
+# Här definieras en färgcykel för staplarna (bars)
+
+
