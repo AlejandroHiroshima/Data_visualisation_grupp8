@@ -37,3 +37,15 @@ SIENNA_BROWN    = '#A0522D'
 ROSYBROWN       = '#BC8F8F'
 PERU_BROWN      = '#CD853F'
 WHEAT_BROWN     = '#F5DEB3'
+
+# Orange färgpalett
+ORANGE = "#FFA500"
+LIGHT_ORANGE = "#FFB84D"
+DARK_ORANGE = "#FF7F32"
+PALE_ORANGE = "#FFD699"
+
+# Komplementfärger till orange (blå)
+BLUE = "#0000FF"
+LIGHT_BLUE = "#66B3FF"
+DARK_BLUE = "#003366"
+PALE_BLUE = "#99CCFF"
