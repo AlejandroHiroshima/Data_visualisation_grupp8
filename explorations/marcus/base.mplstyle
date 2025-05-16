@@ -1,0 +1,28 @@
+
+### Label and ticks color
+xtick.color: "585B5C"
+ytick.color: "585B5C"
+
+### ticks and padding
+xtick.major.pad: 5
+ytick.major.pad: 10
+xtick.minor.pad: 4
+ytick.minor.pad: 4
+
+
+### ticks
+xtick.bottom: True
+ytick.major.left: True
+
+### axes
+axes.spines.top: False
+axes.spines.right: False
+axes.labelweight: "bold"
+axes.labelsize: 10
+axes.titlesize: 12
+axes.labelpad: 7
+axes.linewidth: 1.0
+
+
+axes.edgecolor: "white"
+axes.titlecolor: "585B5C"
