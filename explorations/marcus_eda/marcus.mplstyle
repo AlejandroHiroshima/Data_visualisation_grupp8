@@ -11,18 +11,20 @@ ytick.minor.pad: 4
 
 
 ### ticks
-xtick.bottom: True
+xtick.bottom: False
 ytick.major.left: True
 
 ### axes
 axes.spines.top: False
 axes.spines.right: False
 axes.labelweight: "bold"
+axes.labelcolor: "585B5C"
 axes.labelsize: 10
 axes.titlesize: 12
 axes.labelpad: 7
 axes.linewidth: 1.0
 
 
-axes.edgecolor: "white"
+axes.edgecolor: "DACECE"
 axes.titlecolor: "585B5C"
+axes.facecolor: "#f2f2eb"
