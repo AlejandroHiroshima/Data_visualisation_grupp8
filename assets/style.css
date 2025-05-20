@@ -1,5 +1,5 @@
 .card-margin {
-    margin-bottom: 32px;
+    margin-bottom: 30px;
 }
 
 b, strong {
@@ -10,3 +10,15 @@ b, strong {
     background-color: #E9CC7C !important;
     border: none !important;
 }
+
+.education_area_filter .taipy-selector {
+    width: 80% !important;
+}
+
+/* body {
+    background-color: #E9CC7C !important;
+}
+
+.container {
+    background-color: #E9CC7C !important;
+} */

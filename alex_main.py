@@ -75,7 +75,7 @@ with tgb.Page() as number_students_educationalarea_year:
     with tgb.part(class_name="container"):
         with tgb.part(class_name="card card-margin"):
             with tgb.layout(columns="3 2 1"):
-                with tgb.part():
+                with tgb.part(class_name= "education_area_filter"):
                     tgb.selector(
                         value="{educational_area}",
                         lov=educational_area[0],
