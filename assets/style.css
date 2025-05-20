@@ -1,0 +1,12 @@
+.card-margin {
+    margin-bottom: 32px;
+}
+
+b, strong {
+    color: #E9CC7C !important;
+}
+
+.filter-button {
+    background-color: #E9CC7C !important;
+    border: none !important;
+}
