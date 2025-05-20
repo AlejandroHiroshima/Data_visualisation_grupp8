@@ -1,14 +1,6 @@
 from taipy.gui import Gui
 import taipy.gui.builder as tgb
-import pandas as pd
-from pathlib import Path
-
-
-DATA_DIRECTORY = Path(__file__).parents[2] /"data/anordnare_resultat_kurser_2020-2024"
-
-df = pd.read_csv(DATA_DIRECTORY/"df_beviljade_år.csv")
-
-
+from Backend.data_processing import df
 
 
 anordnare = df["Anordnare namn"].unique()
@@ -17,6 +9,7 @@ utbildningsområde = df["Utbildningsområde"].unique()
 
 
 with tgb.Page() as page:
+    tgb.navbar()
     with tgb.part(class_name= "container card"):
         tgb.text("# Rubrik", mode= "md")
         with tgb.layout(columns= "2 1"):
