@@ -82,7 +82,7 @@ with tgb.Page() as number_students_educationalarea_year:
                         dropdown=True,
                         multiple=True,
                         label="Välj utbildningsområde",
-                        width=100
+                        class_name="fullwidth"
                     )
 
                 with tgb.part():
@@ -92,17 +92,19 @@ with tgb.Page() as number_students_educationalarea_year:
                             lov=years[:-1],
                             label="Välj startår",
                             dropdown=True,
-                            on_change=update_end_year
+                            on_change=update_end_year,
+                            class_name="fullwidth"
                         )
                         tgb.selector(
                             value="{end_year}",
                             lov=years,
                             dropdown=True,
-                            label="Välj slutår"
+                            label="Välj slutår",
+                            class_name="fullwidth"
                         )
 
                 with tgb.part(class_name="text-center"):
-                    tgb.button(label="Filtrera", class_name="plain filter-button")
+                    tgb.button(label="Filtrera", class_name="plain filter-button fullwidth")
 
    
     with tgb.part(class_name="container"):
