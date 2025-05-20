@@ -60,31 +60,63 @@ except FileNotFoundError as e:
  
 # start variabler:
 df_cleaned = clean_dataframe(df)
-years= df_cleaned.columns[3:]
+years= df_cleaned.columns[3:].tolist()
 start_year = int(years[0])
 end_year = int(years[-1]) 
-educational_area = []
+educational_area = df_cleaned.index.tolist()
 chart = create_linechart(df_cleaned, xlabel= "År", ylabel= "Antal Studerande")
 
-with tgb.Page() as number_students_educationalarea_year: #Taipy
-    with tgb.part(class_name="container card"):
-        with tgb.layout(columns="2 1"):
-            with tgb.part(class_name="card"):
-                tgb.text("# Studenter på Yrkeshögskola", mode="md")
-                tgb.text("### Utveckling över tid per utvecklingsområde", mode="md")
-                tgb.chart(figure="{chart}")
-            with tgb.part(class_name="card"):
-                tgb.text("**Filtrera data: År och Utbildnings Område**", mode="md")
-                tgb.text("Välj utbildningsområde:")
-                tgb.selector(value="{educational_area}", lov=df_cleaned.index, dropdown=True, multiple=True)
-                tgb.text("Välj start år:")
-                tgb.slider(value="{start_year}", min=start_year, max=end_year-1, step=1, show_value=True, label="Startår", on_change=update_end_year)
-                tgb.text("Välj slut år:")
-                tgb.slider(value="{end_year}", min="{start_year}", max=end_year, step=1, show_value=True, label="Slutår")
+with tgb.Page() as number_students_educationalarea_year:
+    tgb.toggle(theme=True)
+    with tgb.part(class_name="card text-center card-margin"):
+        tgb.text("# Studenter på **Yrkeshögskola**", mode="md")
+    
+
+    with tgb.part(class_name="container"):
+        with tgb.part(class_name="card card-margin"):
+            with tgb.layout(columns="3 2 1"):
+                with tgb.part(class_name= "education_area_filter"):
+                    tgb.selector(
+                        value="{educational_area}",
+                        lov=educational_area[0],
+                        dropdown=True,
+                        multiple=True,
+                        label="Välj utbildningsområde",
+                        width=100
+                    )
+
+                with tgb.part():
+                    with tgb.layout(columns="1 1"):
+                        tgb.selector(
+                            value="{start_year}",
+                            lov=years[:-1],
+                            label="Välj startår",
+                            dropdown=True,
+                            on_change=update_end_year
+                        )
+                        tgb.selector(
+                            value="{end_year}",
+                            lov=years,
+                            dropdown=True,
+                            label="Välj slutår"
+                        )
+
+                with tgb.part(class_name="text-center"):
+                    tgb.button(label="Filtrera", class_name="plain filter-button")
+
+   
+    with tgb.part(class_name="container"):
+        with tgb.part(class_name="card"):
+            tgb.text("### Utveckling över tid per utbildningsområde", mode="md")
+            tgb.chart(figure="{chart}")
                 
 
 
 
 
 if __name__ == "__main__":
-    Gui(number_students_educationalarea_year).run(dark_mode=False, use_reloader=True, port=8080)
+    Gui(number_students_educationalarea_year, css_file="assets/style.css").run(dark_mode=False, 
+                                                use_reloader=True, 
+                                                port=8080,
+                                                title= "Elvins Dashboard",
+                                                watermark="Elvins Dashboard",)
