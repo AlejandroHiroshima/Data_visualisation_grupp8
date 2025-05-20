@@ -1,4 +1,4 @@
-
+from utils.constant import DATA_DIRECTORY
 
 def horizontal_bar(ax, **option):
     

@@ -1,3 +1,9 @@
+from pathlib import Path
+DATA_DIRECTORY = Path(__file__).parents[1] /"data"
+EXPORTED_FILES_DIRECTORY = DATA_DIRECTORY / "save_data"
+GEOJSON_REGIONS =  DATA_DIRECTORY / "geojson" / "swedish_regions.geojson"
+
+
 GRAY_1 = "#CCCCCC"
 GRAY_2 = "#657072"
 GRAY_3 = "#4A606C"
