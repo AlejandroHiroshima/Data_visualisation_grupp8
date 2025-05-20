@@ -1,30 +1,52 @@
 from taipy.gui import Gui
+import taipy.gui.builder as tgb
+import numpy as np 
+import plotly.graph_objects as go 
+import duckdb as db
+from utils.constant import GEOJSON_REGIONS, EXPORTED_FILES_DIRECTORY
+import json
+import pandas as pd 
+from difflib import get_close_matches
+
+df = pd.read_csv(EXPORTED_FILES_DIRECTORY / "regions_2020_2024_log.csv")
+
+with open(GEOJSON_REGIONS, "r") as file:
+    geojson = json.load(file)
+
+def create_region_maps(df):
+    properties = [feature.get("properties") for feature in geojson.get("features")]
+    regions_codes = {
+        property.get("name"): property.get("ref:se:länskod") for property in properties
+    }
+
+    region_codes_map = []
+
+    for region in df["Region"]:
+        region_name = get_close_matches(region, regions_codes.keys(), n=1)[0]
+        code = regions_codes[region_name]
+        region_codes_map.append(code)
+
+    return region_codes_map
 
 
 
-def filtrera_år(result, år):
-    kolumnnamn = f"Antagna {år}"
-    result_filtered = result.copy()
-    result_filtered["log_antagna"] = np.log(result_filtered[kolumnnamn] + 1)
-    result_filtered["antagna"] = result_filtered[kolumnnamn]
-    return result_filtered
+def skapa_karta(df, year = 2020):
 
+    region_codes_map = create_region_maps(df)
 
-def skapa_karta(result, geojson, region_codes_map, år):
-    data_för_år = filtrera_år(result, år)
 
     fig = go.Figure(
         go.Choroplethmapbox(
             geojson=geojson,
             locations=region_codes_map,
-            z=data_för_år["log_antagna"],
+            z=df[f"log_Antagna {year}"],
             featureidkey="properties.ref:se:länskod",
             colorscale="Blues",
-            customdata=data_för_år["antagna"],
+            customdata=df[f"Antagna {year}"],
             marker_opacity=0.9,
             marker_line_width=0.1,
-            text=data_för_år["Region"],
-            hovertemplate="<b>%{text}</b><br>Antal antagna " + str(år) + ": %{customdata}<extra></extra>",
+            text=df.index,
+            hovertemplate="<b>%{text}</b><br>Antal antagna " + str(year) + ": %{customdata}<extra></extra>",
             showscale=False,
         )
     )
@@ -35,7 +57,7 @@ def skapa_karta(result, geojson, region_codes_map, år):
         height=500,
         margin=dict(r=0, l=0, t=50, b=0),
         title=dict(
-            text=f"ANTAGNA ELEVER ÅR {år}",
+            text=f"ANTAGNA ELEVER ÅR {year}",
             x=0.06,
             y=0.75,
             font=dict(size=13),
@@ -44,24 +66,14 @@ def skapa_karta(result, geojson, region_codes_map, år):
     return fig
 
 
-# Delad variabel som användaren styr via dropdown
-valår = 2024  # default
+region_map = skapa_karta(df, year = 2024) 
 
-# Uppdaterad dynamisk figur
-def get_figur():
-    return skapa_karta(result, json_data, region_codes_map, valår)
+with tgb.Page() as page:
+    tgb.text("Välj utbildningsområde", mode="md")
+    tgb.selector(
+        value="{df}",
+        dropdown=True
+    )
+    tgb.chart(figure="{region_map}")
 
-# Taipy layout
-page = """
-# Antagna elever per län
-
-<|{valår}|selector|lov=2020;2021;2022;2023;2024|label=Välj år|on_change=on_year_change|>
-
-<|get_figur|chart|width=100%|height=600px|>
-"""
-
-# Callback-funktion när användaren byter år
-def on_year_change(state):
-    state.get_figur = get_figur()
-
-Gui(page).run()
+Gui(page).run(use_reloader=True, port= 8080, dark_mode=False)
