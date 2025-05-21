@@ -101,6 +101,20 @@ b, strong {
     color: black !important; 
 }
 
+.government {
+    width: 65% !important;
+}
+
+.government_button {
+    width: 80% !important;
+}
+
+.kpi-value {
+    font-size: 2rem;
+    color: #E9CC7C;
+    margin-top: 0.5rem;
+}
+
 /* body {
     background-color: #E9CC7C !important;
 }
