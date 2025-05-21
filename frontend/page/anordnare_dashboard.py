@@ -43,19 +43,39 @@ global_dict_course = {
 # Initializ bindings variable
 display_df_courses = pd.DataFrame()
 display_df_programs = pd.DataFrame()
-organizer_list = list(df_2024_program["Utbildningsanordnare administrativ enhet"].unique())
-year = 2024 
+organizer_list = sorted(df_2024_program["Utbildningsanordnare administrativ enhet"].dropna().unique())
 selected_organizer = organizer_list[0]
+year = 2024 
 amount_beviljade_courses = ""
 total_applied_courses = ""
 amount_beviljade_programs = ""
 total_applied_programs = ""
 
-def change_data(state):
+
+
+def update_year(state):
     
-   
-   
+    # Update selector for anordnare based on year
+    if state.year in global_dict_programs:
+        df_program = global_dict_programs[state.year]
+        new_list = sorted(df_program["Utbildningsanordnare administrativ enhet"].dropna().unique())
+        state.organizer_list = new_list
         
+        print("Ny anordnar lista:", new_list)
+        print("Nuvarande organizer lista:", {state.selected_organizer})
+        print("update selected_organizer:", state.selected_organizer)
+        
+        # checking if new_list and selected organizer are not in new list, if not take the first value in new list
+        if new_list and state.selected_organizer not in new_list:
+            state.selected_organizer = new_list[0]
+   
+    
+
+
+def change_data(state):
+       
+    update_year(state)
+    
     print("==debug==")
     print("Valt år från ui: ", state.year)
     print("Anordnare namn:", state.selected_organizer)
@@ -112,7 +132,7 @@ def change_data(state):
         state.display_df_courses = filter_inkomn
     
         state.amount_beviljade_programs = len(filter_program.query("Beslut == 'Beviljad'"))
-        state.total_appplied_programs = len(filter_program)
+        state.total_applied_programs = len(filter_program)
         state.display_df_programs = filter_program
 
     elif state.year in global_dict_course:
@@ -167,13 +187,14 @@ def change_data(state):
 
 with tgb.Page() as page:
     with tgb.part(class_name="container card"):
-        tgb.text("# <b>Anordnare</b> och KPI:er om beviljande och ansökningar", mode="md")
+        tgb.text("# Anordnare och KPI:er om beviljande och ansökningar", mode="md", raw= True)
         with tgb.layout(columns="1 1"):
+            
+            
             with tgb.part():
-
                 tgb.text("**YEAR**", mode="md")
                 tgb.selector(
-                    "{year}", lov=[2020, 2021, 2022, 2023, 2024], dropdown=True
+                    "{year}", lov=[2020, 2021, 2022, 2023, 2024], dropdown=True, on_change=update_year
                 )
             with tgb.part():    
                 tgb.text("**Anordnare**", mode="md")
@@ -207,6 +228,7 @@ with tgb.Page() as page:
                 with tgb.part(class_name= "container"):
                     tgb.text("**Beviljande program**", mode= "md")
                     tgb.text("{amount_beviljade_programs}")
+                    tgb.html("br")
                     tgb.text("**Ansökta program**", mode= "md")
                     tgb.text("{total_applied_programs}")
                     
@@ -226,7 +248,6 @@ with tgb.Page() as page:
                 tgb.html("br")
                 tgb.table(data="{display_df_programs}", rebuild=True)
                 
-
 
 if __name__ == "__main__":
     Gui(page, css_file="../assets/main.css").run(
