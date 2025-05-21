@@ -97,6 +97,10 @@ b, strong {
     border: 1px solid rgba(233, 204, 124, 0.1);  
 }
 
+.taipy-selector .MuiChip-deleteIcon {
+    color: black !important; 
+}
+
 /* body {
     background-color: #E9CC7C !important;
 }
