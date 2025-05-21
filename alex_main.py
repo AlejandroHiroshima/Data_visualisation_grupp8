@@ -7,7 +7,8 @@ import plotly.express as px
 
 DATA_DIRECTORY = Path(__file__).parents[0] / "data"
 
-def read_csv(sub_category, file_name, separator = ';'):
+#funktioner
+def read_csv(sub_category, file_name, separator = ';'): # 1
     file_path = DATA_DIRECTORY / sub_category / file_name
     with open(file_path, 'rb') as f:
         result = chardet.detect(f.read())
@@ -17,7 +18,7 @@ def read_csv(sub_category, file_name, separator = ';'):
         sep=separator
     )
 
-def clean_dataframe(df):
+def clean_dataframe(df): # 2
     df = df.query("kön == 'totalt'")
     df = df.query("ålder == 'totalt'")
     df = df.drop(["ålder", "kön"], axis=1)
@@ -26,7 +27,7 @@ def clean_dataframe(df):
         df[year] = pd.to_numeric(df[year].str.replace('..', '0'), errors='coerce')
     return df.set_index("Utbildningens Inriktning")
 
-def create_linechart(df, **options):
+def create_linechart(df, **options): # 5
     if df.empty:
         df_long = pd.DataFrame(columns=["Utbildningens Inriktning", "År", "Antal studerande"])
     else:
@@ -66,7 +67,8 @@ selected_educational_area = []
 valid_end_years = years[1:]
 chart = create_linechart(pd.DataFrame()) 
 
-def update_end_year(state):
+#filter funktioner
+def update_end_year(state): # 3
     if not state.start_year:
         notify(state, "warning", "Välj ett startår först")
         return
@@ -74,7 +76,7 @@ def update_end_year(state):
     if not state.end_year or int(state.end_year) < int(state.start_year):
         state.end_year = state.valid_end_years[0] if state.valid_end_years else state.start_year
 
-def filter_data(state):
+def filter_data(state): # 4
     if not state.start_year or not state.end_year:
         notify(state, "warning", "Välj både start och slutår")
         state.chart = create_linechart(pd.DataFrame())
@@ -86,8 +88,10 @@ def filter_data(state):
     filtered_df = state.df_cleaned.loc[state.selected_educational_area]
     selected_years = [year for year in state.years if int(year) >= int(state.start_year) and int(year) <= int(state.end_year)]
     filtered_df = filtered_df[selected_years]
-    state.chart = create_linechart(filtered_df, xlabel="År", ylabel="Antal Studerande")
+    dynamix_xlabel = f"År ({state.start_year} - {state.end_year})"
+    state.chart = create_linechart(filtered_df, xlabel=dynamix_xlabel, ylabel="Antal Studerande")
 
+# Taipy
 with tgb.Page() as number_students_educationalarea_year:
     tgb.toggle(theme=True)
     with tgb.part(class_name="card text-center card-margin"):
@@ -101,7 +105,7 @@ with tgb.Page() as number_students_educationalarea_year:
                         lov=educational_area,
                         dropdown=True,
                         multiple=True,
-                        label="Välj utbildningsområde",
+                        label="Välj Utbildningsområde",
                         class_name="fullwidth"
                     )
                 with tgb.part():
@@ -109,7 +113,7 @@ with tgb.Page() as number_students_educationalarea_year:
                         tgb.selector(
                             value="{start_year}",
                             lov=years[:-1],
-                            label="Välj startår",
+                            label="Välj Startår",
                             dropdown=True,
                             on_change=update_end_year,
                             class_name="fullwidth"
@@ -118,7 +122,7 @@ with tgb.Page() as number_students_educationalarea_year:
                             value="{end_year}",
                             lov="{valid_end_years}",
                             dropdown=True,
-                            label="Välj slutår",
+                            label="Välj Slutår",
                             class_name="fullwidth"
                         )
                 with tgb.part(class_name="text-center"):
@@ -151,5 +155,5 @@ if __name__ == "__main__":
         use_reloader=True,
         port=8080,
         title="Elvins Dashboard",
-        watermark="**Elvins Dashboard**"
+        watermark="Elvins Dashboard"
     )
