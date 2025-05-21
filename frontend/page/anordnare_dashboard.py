@@ -225,6 +225,7 @@ with tgb.Page() as page:
                 tgb.text("## Programs", mode= "md")
                 tgb.html("br")
                 tgb.table(data="{display_df_programs}", rebuild=True)
+                
 
 
 if __name__ == "__main__":
