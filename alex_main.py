@@ -131,7 +131,7 @@ with tgb.Page() as number_students_educationalarea_year:
                                on_action=filter_data)
     with tgb.part(class_name="container"):
         with tgb.part(class_name="card"):
-            tgb.text("### Utveckling över tid per utbildningsområde", mode="md")
+            tgb.text("### Utveckling över tid per **Utbildningsområde**", mode="md")
             tgb.chart(figure="{chart}")
 
 if __name__ == "__main__":
