@@ -127,7 +127,7 @@ with tgb.Page() as number_students_educationalarea_year:
                         )
                 with tgb.part(class_name="text-center"):
                     tgb.button(label="Filtrera",
-                               class_name="plain filter-button fullwidth",
+                               class_name="plain filter-button government_button",
                                on_action=filter_data)
     with tgb.part(class_name="container"):
         with tgb.part(class_name="card"):
