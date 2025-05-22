@@ -2,7 +2,6 @@ from pathlib import Path
 DATA_DIRECTORY = Path(__file__).parents[1] /"data"
 EXPORTED_FILES_DIRECTORY = DATA_DIRECTORY / "save_data"
 GEOJSON_REGIONS =  DATA_DIRECTORY / "geojson" / "swedish_regions.geojson"
-DATA_DIRECTORY = Path(__file__).parents[2] /"data/anordnare_resultat_kurser_2020-2024"
 
 
 GRAY_1 = "#CCCCCC"

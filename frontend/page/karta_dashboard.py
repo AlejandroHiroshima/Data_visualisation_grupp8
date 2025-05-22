@@ -1,5 +1,5 @@
 import taipy.gui.builder as tgb
-from frontend.map import skapa_karta
+from frontend.frontend_map import create_map
 from Backend.data_processing import df 
 
 # ===== Globala variabler =====
@@ -9,10 +9,10 @@ region_map = None
 
 # ===== Callback när året ändras =====
 def on_year_change(state):
-    state.region_map = skapa_karta(df, state.selected_year)
+    state.region_map = create_map(df, state.selected_year)
 
 # ===== Initiera första kartan =====
-region_map = skapa_karta(df, selected_year)
+region_map = create_map(df, selected_year)
 
 # ===== GUI-sida =====
 with tgb.Page() as map_page:
@@ -28,5 +28,3 @@ with tgb.Page() as map_page:
     tgb.chart(figure="{region_map}")
 
 
-# ===== 7. Starta GUI =====
-# Gui(page).run(port=8080, dark_mode=False)

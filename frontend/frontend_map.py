@@ -12,7 +12,7 @@ def create_region_maps(df):
         for region in df["Region"]
     ]
 
-def skapa_karta(df, year):
+def create_map(df, year):
     codes = create_region_maps(df)
     fig = go.Figure(go.Choroplethmapbox(
         geojson=geojson,
