@@ -15,10 +15,21 @@ def read_excel(sub_category, file_name, skiprows=5, skipfooter=4): # 1
         skiprows=skiprows,
         skipfooter=skipfooter
     )
+
 def clean_df(df):
     index = df.columns[0]
     df = df.set_index(index)
     return df
+
+def clean_columns(column):
+    if isinstance(column, int):
+        return column  
+    new_column = column.replace(",", "")
+    try: 
+        return int(new_column)
+    except ValueError:
+        return column
+
 
 try:
     df = read_excel(sub_category="statliga_bidrag", file_name="ek_4_utbet_arsplatser_utbomr.xlsx")
@@ -47,7 +58,11 @@ schablon_moms = {
 }
 selected_educational_area = ""
 year = ""
+df.columns = [clean_columns(column) for column in df.columns]
 years = df.columns
+year_students = "-"
+schablon = "-"
+government_funding = "-"
 
 # Filter funktion
 def filter_data(state):
@@ -56,6 +71,15 @@ def filter_data(state):
         return
     if not state.year:
         notify(state, "warning", "Välj ett År")
+    area= state.selected_educational_area
+    year = int(state.year)
+    year_students = df.loc[area,year]
+    schablon = schablon_moms[area]
+    government_funding = year_students * schablon
+
+    state.year_students= year_students
+    state.schablon = schablon
+    state.government_funding = government_funding
 
 
 with tgb.Page() as government_grant_per_program:
@@ -89,11 +113,11 @@ with tgb.Page() as government_grant_per_program:
         with tgb.layout(columns="1 1 1"): 
             with tgb.part(class_name="card card-margin text-center"):
                 tgb.text("### Statsbidrag", mode="md")
-                tgb.text("**{statsbidrag:,.0f}** kr", mode="md", class_name="kpi-value")
+                tgb.text("**{government_funding:,.0f}** kr", mode="md", class_name="kpi-value")
 
             with tgb.part(class_name="card card-margin text-center"):
                 tgb.text("### Antal årsplatser", mode="md")
-                tgb.text("**{arsplatser:,.1f}**", mode="md", class_name="kpi-value")
+                tgb.text("**{year_students:,.1f}**", mode="md", class_name="kpi-value")
 
             with tgb.part(class_name="card card-margin text-center"):
                 tgb.text("### Schablonbelopp", mode="md")
@@ -102,6 +126,17 @@ with tgb.Page() as government_grant_per_program:
 if __name__ == "__main__":
     Gui(
         government_grant_per_program,
+        [
+            df,
+            educational_area,
+            schablon_moms,
+            selected_educational_area,
+            year,
+            years,
+            year_students,
+            schablon,
+            government_funding
+        ],
         css_file="assets/style.css"
     ).run(
         dark_mode=False,
