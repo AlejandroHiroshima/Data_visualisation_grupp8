@@ -81,8 +81,9 @@ def update_end_year(state): # 3
         notify(state, "warning", "Välj ett startår först")
         return
     state.valid_end_years = [year for year in state.years if int(year) > int(state.start_year)]
+    # state.end_year = state.start_year + 1
     if not state.end_year or int(state.end_year) < int(state.start_year):
-        state.end_year = state.valid_end_years[0] if state.valid_end_years else state.start_year
+        state.end_year = state.valid_end_years[0] #if state.valid_end_years else state.start_year
 
 def filter_data(state): # 4
     if not state.start_year or not state.end_year:
