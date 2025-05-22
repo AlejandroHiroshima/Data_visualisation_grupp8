@@ -179,6 +179,7 @@ def change_data(state):
     print(" Typ av state.year:", type(state.year))
 
    
+   
 
         
     dff_programs = global_dict_programs.get(state.year).copy()
