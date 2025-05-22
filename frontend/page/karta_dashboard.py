@@ -1,5 +1,5 @@
 import taipy.gui.builder as tgb
-from frontend.frontend_map import create_map
+from frontend.map import skapa_karta
 from Backend.data_processing import df 
 
 # ===== Globala variabler =====

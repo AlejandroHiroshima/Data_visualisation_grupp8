@@ -45,10 +45,6 @@ def reading_file_course():
     return dict_courses
             
 
-            
-
-
-
 
 def reading_file_programs():
     
@@ -63,21 +59,19 @@ def reading_file_programs():
     dict_programs[2023] = df_program_2023
     
     df_program_2022 = pd.read_excel(DATA_DIRECTORY / "program_2020-2024/resultat-ansokningsomgang-2022.xlsx", sheet_name= "Tabell 4")
-    df_program_2022.rename(columns= {"Utbildningsanordnare administrativ enhe": "Anordnare namn"}, inplace= True)
+    df_program_2022.rename(columns= {"Utbildningsanordnare administrativ enhet": "Anordnare namn"}, inplace= True)
     dict_programs[2022] = df_program_2022
     
     df_program_2021 = pd.read_excel(DATA_DIRECTORY / "program_2020-2024/resultat-ansokningsomgang-2021.xlsx", sheet_name= "Tabell 4")
-    df_program_2021.rename(columns= {"Utbildningsanordnare administrativ enhe": "Anordnare namn"}, inplace= True)
+    df_program_2021.rename(columns= {"Utbildningsanordnare administrativ enhet": "Anordnare namn"}, inplace= True)
     dict_programs[2021] = df_program_2021
     
     df_program_2020 = pd.read_excel(DATA_DIRECTORY / "program_2020-2024/resultat-ansokningsomgang-2020.xlsx", sheet_name= "Tabell 4")
-    df_program_2020.rename(columns= {"Utbildningsanordnare administrativ enhe": "Anordnare namn"}, inplace= True)
+    df_program_2020.rename(columns= {"Utbildningsanordnare administrativ enhet": "Anordnare namn"}, inplace= True)
     dict_programs[2020] = df_program_2020
     
     return dict_programs
-
-
-
+            
 
 
 
@@ -104,6 +98,10 @@ percentage_courses = ""
 percentage_programs = ""
 sokta_platser = ""
 beviljade_platser = ""
+count_stats = ""
+course_applied_spots = ""
+course_approved_spots = ""
+stats_platser_kurs = ""
 
 def kpi_filter(filtered):
     filtered = filtered.query("Beslut == 'Beviljad'")
@@ -111,15 +109,18 @@ def kpi_filter(filtered):
     return filtered
 
 
-def filter_data(state):
+def filter_data(df, state):
     
-    filtered = filtered.query("`Anordnare namn` == @state.selected_organizer")
+    filtered = df.query("`Anordnare namn` == @state.selected_organizer")
     
     return filtered
 
-def count_percentag(state):
 
+# count KPI:er for percentage        
+def count_percentag(state):
+    
     try:
+        # Percentage for applied courses
         if (
             state.amount_beviljade_courses
             and state.total_applied_courses > 0
@@ -130,22 +131,45 @@ def count_percentag(state):
             state.percentage_courses = f"{percentage_c:.1f}%"
         
         else:
-            state.percentage_courses = "0%"
+            state.percentage_courses = f"Fel {percentage_c}"
             
+        # percentage for applied programs 
         if state.amount_beviljade_programs and state.total_applied_programs > 0:
                 percentage_p = state.amount_beviljade_programs / state.total_applied_programs * 100
                 state.percentage_programs = f"{percentage_p:.1f}%"
 
         else:
-            state.percentage_programs = "0%"
+            state.percentage_programs = f"Fel {percentage_p}"
+            
+        # Percentage for platser programs
+        if state.beviljade_platser and state.sokta_platser > 0:
+            count_stats = state.beviljade_platser / state.sokta_platser * 100
+            state.count_stats = f"{count_stats:.1f}%"
+            
+            
+        else:
+            state.count_stats = f"Fel {count_stats}"
+            
+            
+        # Percentage for platser i courses  
+        if state.course_applied_spots and state.course_approved_spots > 0:
+            
+            percent_p = state.course_applied_spots / state.course_approves_spots * 100
+            
+            state.percent_p = f"{percent_p}%"
+            
+        else:
+            state.percent_p = f"Fel {percent_p}"
+            
+        
 
     except Exception as e:
-        state.percentage_courses = "fel {state.percentage_courses}"
-        state.percentage_progrmas = "fel {state.percentage_programs}"
+        state.percentage_courses = f"Fel {e}"
+        state.percentage_programs = f"fel {e}"
 
 
 def update_year(state):
-
+    
     # Update selector for anordnare based on year
     if state.year in global_dict_programs:
         df_program = global_dict_programs[state.year]
@@ -166,7 +190,7 @@ def update_year(state):
 
 
 def change_data(state):
-
+    
     update_year(state)
 
     print("==debug==")
@@ -188,10 +212,10 @@ def change_data(state):
     dff = global_dict_course.get(state.year).copy()
 
     # Filter on selecte organinazer courses
-    filtered = filter_data(dff)
+    filtered = filter_data(dff, state)
 
     # Filter on selectro organizer programs
-    filtered_programs = filter_data(dff_programs)
+    filtered_programs = filter_data(dff_programs, state)
     # Uppdaera tabellens innehåll
     state.display_df_courses = filtered
 
@@ -199,16 +223,24 @@ def change_data(state):
     state.display_df_programs = filtered_programs
     
 
-
+    print(f"Vad visar filtered här: {filtered}")
     # Count KPI:er
+    # len to get a number how many row filtered and filtered_programs has.
+    # Filtered is a variable with value of choosing organizer
     state.total_applied_courses = len(filtered)
     state.total_applied_programs = len(filtered_programs)
-
+    
+    # len finding number of row kpi_filter function filter Beslut is Beviljad
     state.amount_beviljade_courses = len(kpi_filter(filtered))
     state.amount_beviljade_programs = len(kpi_filter(filtered_programs))
 
-    state.sokta_platser = dff.groupby("@state.selected_organizer")["Sökta platser totalt"]
-    state.beviljade_platser = dff.groupby("@state.selected_organizer")["Sökta platser beviljade"]
+    # filtered_programs is the new data
+    # sum all in column sökta platser totalt
+    state.sokta_platser = filtered_programs["Sökta platser totalt"].sum()
+    state.beviljade_platser = filtered_programs["Beviljade platser totalt"].sum()
+    #courses 
+    state.course_applied_spots = filtered[["Antal beviljade platser start 2024", "Antal beviljade platser start 2025"]].sum().sum()
+    state.course_approved_spots = filtered.query("Beslut == 'Beviljad'")["Totalt antal beviljade platser"].sum()
     
     print("Antal rade i filtered:", len(filtered_programs))
     print("Kollumner:", filtered_programs.columns.tolist)
@@ -222,7 +254,7 @@ def change_data(state):
     print("Totalt ansökningar programs:", state.amount_beviljade_programs)
     
     count_percentag(state)
-
+   
 
 with tgb.Page() as page:
     tgb.toggle(theme=True)
@@ -236,7 +268,7 @@ with tgb.Page() as page:
                 tgb.text("**SELECT YEAR**", mode="md")
                 tgb.selector(
                     "{year}",
-                    lov=[2020, 2021, 2022, 2023, 2024],
+                    lov=[2024, 2023, 2022, 2021, 2020],
                     dropdown=True,
                     on_change=update_year,
                 )
@@ -293,24 +325,23 @@ with tgb.Page() as page:
             with tgb.layout(columns= ("1 1 1")):
                 
                 
-                
                 with tgb.part(class_name= "container"):
                     tgb.text("Antal ansökta platser kurser", class_name= "container")
                     with tgb.part(class_name= "card"):
-                        tgb.text("Reuslt of applied courser")
+                        tgb.text("{course_applied_spots}")
                     
                     
                 
                 with tgb.part(class_name="container"):
                     tgb.text("Antal beviljande platser kurser", class_name= "container")
                     with tgb.part(class_name= "card"):
-                        tgb.text("approved courses")
+                        tgb.text("{program_approved_spots}")
                     
                 
                 with tgb.part(class_name="container"):
                     tgb.text("Beviljandegrad platser för kurser", class_name= "container")
                     with tgb.part(class_name= "card"):
-                        tgb.text("stats")
+                        tgb.text("{stats_platser_kurs}")
                    
                    
             tgb.html("br")   
@@ -360,7 +391,7 @@ with tgb.Page() as page:
                 with tgb.part(class_name= "container"):                    
                     tgb.text("Beviljandegrad platser program")
                     with tgb.part(class_name= "card"):
-                        tgb.text("stats")
+                        tgb.text("{count_stats}")
 
         
             tgb.html("br")
@@ -370,6 +401,6 @@ with tgb.Page() as page:
 
 
 if __name__ == "__main__":
-    Gui(page, css_file="../assets/main.css").run(
+    Gui(page, css_file="style.css").run(
         dark_mode=False, use_reloader=False, port=8080
     )
