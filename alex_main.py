@@ -66,6 +66,14 @@ educational_area = df_cleaned.index.tolist()
 selected_educational_area = []
 valid_end_years = years[1:]
 chart = create_linechart(pd.DataFrame()) 
+number_students = 0
+biggest_percentage_change = 0
+kpi_total = "-"
+kpi_mean = "-"
+kpi_peak_year = "-"
+kpi_peak_year_value = "-"
+kpi_top_area = "-"
+kpi_top_area_value = "-"
 
 #filter funktioner
 def update_end_year(state): # 3
@@ -80,16 +88,39 @@ def filter_data(state): # 4
     if not state.start_year or not state.end_year:
         notify(state, "warning", "Välj både start och slutår")
         state.chart = create_linechart(pd.DataFrame())
+        state.number_students = "-"
+        state.kpi_total = "-"
+        state.kpi_mean = "-"
+        state.kpi_peak_year = "-"
+        state.kpi_peak_year_value = "-"
+        state.kpi_top_area = "-"
+        state.kpi_top_area_value = "-"
         return
     if not state.selected_educational_area:
         notify(state, "warning", "Välj minst ett utbildningsområde")
         state.chart = create_linechart(pd.DataFrame())
+        state.number_students = "-"
+        state.kpi_total = "-"
+        state.kpi_mean = "-"
+        state.kpi_peak_year = "-"
+        state.kpi_peak_year_value = "-"
+        state.kpi_top_area = "-"
+        state.kpi_top_area_value = "-"
         return
     filtered_df = state.df_cleaned.loc[state.selected_educational_area]
     selected_years = [year for year in state.years if int(year) >= int(state.start_year) and int(year) <= int(state.end_year)]
     filtered_df = filtered_df[selected_years]
     dynamix_xlabel = f"År ({state.start_year} - {state.end_year})"
     state.chart = create_linechart(filtered_df, xlabel=dynamix_xlabel, ylabel="Antal Studerande")
+    state.number_students = int(filtered_df.sum().sum())
+    state.kpi_total = int(filtered_df.sum().sum())
+    state.kpi_mean = int(filtered_df.mean().mean())
+    year_sums = filtered_df.sum(axis=0)
+    state.kpi_peak_year = int(year_sums.idxmax())
+    state.kpi_peak_year_value = int(year_sums.max())
+    area_sums = filtered_df.sum(axis=1)
+    state.kpi_top_area = str(area_sums.idxmax())
+    state.kpi_top_area_value = int(area_sums.max())
 
 # Taipy
 with tgb.Page() as number_students_educationalarea_year:
@@ -130,6 +161,22 @@ with tgb.Page() as number_students_educationalarea_year:
                                class_name="plain filter-button government_button",
                                on_action=filter_data)
     with tgb.part(class_name="container"):
+            with tgb.layout(columns="1 1 1"):
+                with tgb.part(class_name="card card-margin text-center"):
+                    tgb.text("#### Genomsnitt/år", mode="md")
+                    tgb.text("**{kpi_mean:,}**", mode="md")
+
+                with tgb.part(class_name="card card-margin text-center"):
+                    tgb.text("#### Flest studenter år", mode="md")
+                    tgb.text("**{kpi_peak_year}**", mode="md")
+                    tgb.text("**{kpi_peak_year_value:,}**  st studenter", mode ="md")
+
+                with tgb.part(class_name="card card-margin text-center"):
+                    tgb.text("#### Största område", mode="md")
+                    tgb.text("**{kpi_top_area}**", mode="md")
+                    tgb.text("**{kpi_top_area_value:,}** st studenter totalt", mode= "md")
+                                    
+    with tgb.part(class_name="container"):
         with tgb.part(class_name="card"):
             tgb.text("### Utveckling över tid per **Utbildningsområde**", mode="md")
             tgb.chart(figure="{chart}")
@@ -147,7 +194,15 @@ if __name__ == "__main__":
             valid_end_years,
             chart,
             filter_data,
-            update_end_year
+            update_end_year,
+            number_students,
+            biggest_percentage_change,
+            kpi_total,
+            kpi_mean,
+            kpi_peak_year,
+            kpi_peak_year_value,
+            kpi_top_area,
+            kpi_top_area_value
         ],
         css_file="assets/style.css"
     ).run(
