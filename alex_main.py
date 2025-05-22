@@ -163,16 +163,16 @@ with tgb.Page() as number_students_educationalarea_year:
     with tgb.part(class_name="container"):
             with tgb.layout(columns="1 1 1"):
                 with tgb.part(class_name="card card-margin text-center"):
-                    tgb.text("#### Genomsnitt/år", mode="md")
+                    tgb.text("#### Genomsnitt/år:", mode="md")
                     tgb.text("**{kpi_mean:,}**", mode="md")
 
                 with tgb.part(class_name="card card-margin text-center"):
-                    tgb.text("#### Flest studenter år", mode="md")
+                    tgb.text("#### Flest studenter år:", mode="md")
                     tgb.text("**{kpi_peak_year}**", mode="md")
                     tgb.text("**{kpi_peak_year_value:,}**  st studenter", mode ="md")
 
                 with tgb.part(class_name="card card-margin text-center"):
-                    tgb.text("#### Största område", mode="md")
+                    tgb.text("#### Största område:", mode="md")
                     tgb.text("**{kpi_top_area}**", mode="md")
                     tgb.text("**{kpi_top_area_value:,}** st studenter totalt", mode= "md")
                                     
