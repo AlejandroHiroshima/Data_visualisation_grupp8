@@ -39,7 +39,7 @@ except FileNotFoundError as e:
     df = pd.DataFrame()
 
 #initiera variabler:
-educational_area = list(df.index)
+educational_area = list(df.index[:-2])
 schablon_moms = {
     "Data/IT": 74100,
     "Ekonomi, administration och försäljning": 66600,
