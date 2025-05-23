@@ -5,4 +5,4 @@ from frontend.page.home import home_page
 
 pages = {"Hem": home_page,"Karta": map_page}
 
-Gui(pages=pages).run(port=8080, dark_mode=False)
+Gui(pages=pages).run(port=8080, dark_mode=False, use_reloader=True)
