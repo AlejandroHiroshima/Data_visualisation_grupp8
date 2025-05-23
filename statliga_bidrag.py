@@ -58,7 +58,7 @@ schablon_moms = {
 }
 selected_educational_area = ""
 year = ""
-df.columns = [clean_columns(column) for column in df.columns]
+df.columns = list(map(clean_columns, df.columns))
 years = df.columns
 year_students = "-"
 schablon = "-"
@@ -71,16 +71,9 @@ def filter_data(state):
         return
     if not state.year:
         notify(state, "warning", "Välj ett År")
-    area= state.selected_educational_area
-    year = int(state.year)
-    year_students = df.loc[area,year]
-    schablon = schablon_moms[area]
-    government_funding = year_students * schablon
-
-    state.year_students= year_students
-    state.schablon = schablon
-    state.government_funding = government_funding
-
+    state.year_students = df.loc[state.selected_educational_area, int(state.year)]
+    state.schablon = schablon_moms[state.selected_educational_area]
+    state.government_funding = state.year_students * state.schablon
 
 with tgb.Page() as government_grant_per_program:
     tgb.toggle(theme=True)
