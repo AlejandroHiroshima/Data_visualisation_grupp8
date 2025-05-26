@@ -16,31 +16,26 @@ kpi_lowest_region_value = "-"
 
 # ===== Callback när året ändras =====
 def on_year_change(state):
-    year_df = df[df["år"] == state.selected_year]
+    # selected_year = str(state.selected_year)  # eller str beroende på dtype
+    print(df)
+    year_df = df[f"Antagna {state.selected_year}"]
+    region_df = df["Region"]
 
-    if year_df.empty:
-        state.kpi_total_admitted_sweden = "-"
-        state.kpi_top_region = "-"
-        state.kpi_top_region_value = "-"
-        state.kpi_lowest_region = "-"
-        state.kpi_lowest_region_value = "-"
-    else:
-        total = year_df["antal_antagna"].sum()
-        top_row = year_df.loc[year_df["antal_antagna"].idxmax()]
-        bottom_row = year_df.loc[year_df["antal_antagna"].idxmin()]
+    total = year_df.sum()
+    top_row = year_df.iloc[year_df.idxmax()]
+    bottom_row = year_df.iloc[year_df.idxmin()]
+    top_region = region_df.iloc[year_df.idxmax()]
+    bottom_region = region_df.iloc[year_df.idxmin()]
 
-        state.kpi_total_admitted_sweden = int(total)
-        state.kpi_top_region = top_row["region"]
-        state.kpi_top_region_value = int(top_row["antal_antagna"])
-        state.kpi_lowest_region = bottom_row["region"]
-        state.kpi_lowest_region_value = int(bottom_row["antal_antagna"])
+    state.kpi_total_admitted_sweden = int(total)
+    state.kpi_top_region = top_region
+    state.kpi_top_region_value = int(top_row)
+    state.kpi_lowest_region = bottom_region
+    state.kpi_lowest_region_value = int(bottom_row)
 
     state.region_map = create_map(df, state.selected_year)
 
-# ===== Callback när året ändras =====
-def on_year_change(state):
-    state.region_map = create_map(df, state.selected_year)
-
+    
 # ===== Initiera första kartan =====
 region_map = create_map(df, selected_year)
 
@@ -48,7 +43,7 @@ region_map = create_map(df, selected_year)
 with tgb.Page() as map_page:
     tgb.navbar()
     with tgb.part(class_name="card text-center card-margin"):
-        tgb.text("# ANTAGNA STUDENTER VID START", mode="md")
+        tgb.text("## ANTAGNA STUDENTER VID START", mode="md")
 
     tgb.html("br")
     with tgb.part(class_name="container"): 
@@ -69,17 +64,17 @@ with tgb.Page() as map_page:
         with tgb.layout(columns="1 1 1"):
             with tgb.part(class_name="card card-margin text-center"):
                 tgb.text("### Totalt antagna", mode="md")
-                tgb.text("**{kpi_total_admitted_sweden:,}**", mode="md")
+                tgb.text("**{kpi_total_admitted_sweden}**", mode="md")
 
             with tgb.part(class_name="card card-margin text-center"):
                 tgb.text("### Regionen med flest studenter", mode="md")
-                tgb.text("**{kpi_top_region}**", mode="md")
-                tgb.text("**{kpi_top_region_value:,}** studenter", mode="md")
+                tgb.text("{kpi_top_region}", mode="md")
+                tgb.text("{kpi_top_region_value} studenter", mode="md")
 
             with tgb.part(class_name="card card-margin text-center"):
                 tgb.text("### Minst antagna region", mode="md")
-                tgb.text("**{kpi_lowest_region}**", mode="md")
-                tgb.text("**{kpi_lowest_region_value:,}** studenter", mode="md")
+                tgb.text("{kpi_lowest_region}", mode="md")
+                tgb.text("{kpi_lowest_region_value} studenter", mode="md")
                 
     tgb.html("br")                             
     with tgb.part(class_name="container"):
