@@ -1,7 +1,8 @@
-from taipy.gui import Gui
+from taipy.gui import Gui, notify
 import taipy.gui.builder as tgb
 import pandas as pd
 from pathlib import Path
+
 
 
 DATA_DIRECTORY = Path(__file__).parents[2] / "data"
@@ -134,7 +135,7 @@ def reading_file_programs():
         columns={"Utbildningsanordnare administrativ enhet": "Anordnare namn"},
         inplace=True,
     )
-    print("Kolumner för program 2020:", df_program_2020.columns.tolist())
+  
     dict_programs[2020] = df_program_2020
 
     return dict_programs
@@ -151,10 +152,9 @@ global_dict_programs = reading_file_programs()
 # Initializ bindings variable
 display_df_courses = pd.DataFrame()
 display_df_programs = pd.DataFrame()
-organizer_list = sorted(global_dict_programs[2024]["Anordnare namn"].dropna().unique())
-selected_organizer_temp = ""
-selected_organizer = ""
-year = 2024
+organizer_list = []
+selected_organizer = None
+year = None 
 amount_beviljade_courses = ""
 total_applied_courses = ""
 amount_beviljade_programs = ""
@@ -232,28 +232,61 @@ def count_percentage(part, hole):
 
 
 def update_year(state):
+    
+    try:
+        state.year = int(state.year)
+        
+    except:
+        print(f"⚠ Ogiltigt årval: {state.year}")
+        return
+    
+    
+    
+    print(f"Uppdaterad anordnare för år: {state.year}")
 
     # Update selector for anordnare based on year
     if state.year in global_dict_programs:
+        
         df_program = global_dict_programs[state.year]
-        new_list = sorted(df_program["Anordnare namn"].dropna().unique())
-        state.organizer_list = new_list
+        
+        print(f"Dataframe kolumn: {df_program.columns.tolist()}")
+        print(f"Antal rader: {len(df_program)}")
+        
+        if "Anordnare namn" in df_program.columns:
+            
+            new_list = sorted(df_program["Anordnare namn"].dropna().unique())
+            print(f"Ny lista:", new_list[:5])
+        
+            state.organizer_list = []
+            state.organizer_list = list(new_list)
 
-        if new_list:
-            state.selected_organizer_temp = new_list
-
+            if state.selected_organizer and state.selected_organizer not in new_list:
+                state.selected_organizer= None
+                
         else:
-            state.selected_organizer_temp = state.selected_organizer
+            print("❌ kolumnen 'Anordnare namn' finns inte i dataframe")
+            
+    else:
+        print("❌ ÅR {state.year} finns inte i globala_dict_programs")
+
+      
 
 
 def change_data(state):
 
+    print(f"\nkör change_data med year= {state.year}, \nselected_organizer= {state.selected_organizer}" )
+    
+    if not state.year or not state.selected_organizer:
+        
+        print("⚠️ Abryter - år eller anordnare inte valt")
+        notify(state, "⚠️Warning", "Vänligen välj år och anorndare")
+        
+        return
     
     try:
         
         update_year(state)
-
-
+        
         state.year = int(state.year)
 
         # Pandas get to bring selected year
@@ -261,24 +294,19 @@ def change_data(state):
         dff_programs = global_dict_programs.get(state.year).copy()
 
         # using get to pick out which dataframe to copy
-        dff = global_dict_course.get(state.year).copy()
-        
-        
-        print(f"Year: {state.year}")
-        print(f"Selected Organizer: {state.selected_organizer}")
-        print("Program columns:", dff_programs.columns.tolist())
-        print("Course columns:", dff.columns.tolist())
+        dff = global_dict_course.get(state.year).copy()  
         
     except Exception as e:
         print("Fel change_data:", e)
 
     # Filter on selecte organinazer courses
     filtered = filter_data(dff, state)
-
     # Filter on selectro organizer programs
     filtered_programs = filter_data(dff_programs, state)
+
     # Uppdaera tabellens innehåll
     state.display_df_courses = filtered
+    state.display_df_programs = filtered_programs
 
   
     # Count KPI:er
@@ -312,98 +340,111 @@ def change_data(state):
 
 with tgb.Page() as page:
     tgb.toggle(theme=True)
-    with tgb.part(class_name="container card"):
+    with tgb.part(class_name="card text-center card-margin"):
         tgb.text(
             "# Anordnare och KPI:er om beviljande och ansökningar", mode="md", raw=True
         )
-        with tgb.layout(columns="1 1"):
+       
 
-            with tgb.part():
-                tgb.text("**SELECT YEAR**", mode="md")
-                tgb.selector(
-                    value="{year}",
-                    lov=[2024, 2023, 2022, 2021, 2020],
-                    dropdown=True,
-                    on_change=update_year,
-                )
-            with tgb.part():
-                tgb.text("**SELECT ANORDNARE**", mode="md")
-                tgb.selector(
-                    value="{selected_organizer}",
-                    lov="{organizer_list}",
-                    dropdown=True,
-                    filter=True,
-                )
-
-        with tgb.part():
-
-            tgb.button(
-                label="APPLY",
-                class_name="plain apply_buttom",
-                on_action=change_data,
-            )
-
-        with tgb.part():
-            tgb.text("**TEXT OM KPI:er**", mode="md")
-            with tgb.part(class_name="container"):
-                tgb.text("KPI.er för hur det har gått för anordnaren för året {year}")
-
-            # start kpi:er, applied courses
-            tgb.html("br")
-            with tgb.layout(columns=("1 1 1 1")):
-
-                # applied course
-                with tgb.part(class_name="container"):
-                    tgb.text("Antal ansökta kurser", class_name="container")
-                    with tgb.part(class_name="card"):
-                        tgb.text("{total_applied_courses}")
-
-                # approved course
-                with tgb.part(class_name="container"):
-                    tgb.text(
-                        "Antal beviljande kurser", class_name="container"
+    with tgb.part(class_name= "container"):
+        with tgb.part(class_name= " card card-margin"):
+            with tgb.layout(columns="1 2 1"):
+                with tgb.part():
+                    tgb.selector(
+                        value="{year}",
+                        label= "Välj år",
+                        lov=[2024, 2023, 2022, 2021, 2020],
+                        dropdown=True,
+                        on_change=update_year,
+                        class_name= "fullwidth",
+                        bind = "year"
                     )
-                    with tgb.part(class_name="card"):
-                        tgb.text("{amount_beviljade_courses}")
-                
-                # stats for courses, approved / applied
-                with tgb.part(class_name="container"):
-                    tgb.text("Beviljandegrad kurser", class_name="container")
-                    with tgb.part(class_name="card"):
-                        tgb.text("{percentage_courses}")
-                        
-                # amount of spots for courses             
-                with tgb.part(class_name="container"):
-                    tgb.text("Antal beviljande platser kurser", class_name="container")
-                    with tgb.part(class_name="card"):
-                        tgb.text("{course_approved_spots}")
+                    
+                with tgb.part():
+                    tgb.selector(
+                        value="{selected_organizer}",
+                        label= "Välj anordnare",
+                        lov="{organizer_list}",
+                        dropdown=True,
+                        filter=True,
+                        class_name= "fullwidth",
+                        bind= "selected_organizer",
+                        disabled = "year == None or year == ''"
+                    )
 
-            # data set for courses
+                with tgb.part(class_name= "text-center"):
+                    tgb.button(
+                        label="FILTRERA",
+                        class_name="plain filter-button government_button",
+                        on_action=change_data,
+                        disabled = "{selected_organizer} == None or {selected_organizer} == '' or {year} == None or {year} == ''",
+                        bind = ["year",  "selected_organizer"] 
+                    )
+                    
+    with tgb.part(class_name= "container"):
+        with tgb.part(class_name= "card card-margin"):
+            tgb.text("**TEXT OM KPI:er**", mode="md")
             tgb.html("br")
-            with tgb.part(class_name="container"):
-                tgb.text("## DATA KURSER", mode="md")
-                tgb.html("br")
-                tgb.table(data="{display_df_courses}", rebuild=True)
+            tgb.text("KPI.er för hur det har gått för anordnaren för året {year}")
 
-            with tgb.part(class_name="container"):
-                tgb.text("KPI:er för program för valt anordnare")
+        # start kpi:er, applied courses
+            tgb.html("br")     
+            with tgb.part():
+                with tgb.layout(columns=("1 1 1 1")):
+
+                    # applied course
+                    with tgb.part():
+                        tgb.text("Antal ansökta kurser")
+                        with tgb.part(class_name="card"):
+                            tgb.text("{total_applied_courses}")
+
+                    # approved course
+                    with tgb.part():
+                        tgb.text(
+                            "Antal beviljande kurser"
+                        )
+                        with tgb.part(class_name="card"):
+                            tgb.text("{amount_beviljade_courses}")
+                
+                    # stats for courses, approved / applied
+                    with tgb.part():
+                        tgb.text("Beviljandegrad kurser")
+                        with tgb.part(class_name="card"):
+                            tgb.text("{percentage_courses}")
+                        
+                    # amount of spots for courses             
+                    with tgb.part(class_name="container"):
+                        tgb.text("Antal beviljande platser kurser")
+                        with tgb.part(class_name="card"):
+                            tgb.text("{course_approved_spots}")
+
+    # data set for courses
+    with tgb.part(class_name= "card"):
+        tgb.text("## DATA KURSER", mode="md")
+        tgb.html("br")
+        tgb.table(data="{display_df_courses}", rebuild=True)
+
+    tgb.html("br")
+    with tgb.part(class_name= "container"):
+        with tgb.part(class_name="card card-margin"):
+            tgb.text("KPI:er för program för valt anordnare")
 
             # how many programs and approved 
             tgb.html("br")
             with tgb.layout(columns=("1 1 1")):
                 
                 with tgb.part(class_name="container"):
-                    tgb.text("Antal ansökta program", class_name="container")
+                    tgb.text("Antal ansökta program")
                     with tgb.part(class_name="card"):
                         tgb.text("{total_applied_programs}")
 
                 with tgb.part(class_name="container"):
-                    tgb.text("Antal beviljande program", class_name="container")
+                    tgb.text("Antal beviljande program")
                     with tgb.part(class_name="card"):
                         tgb.text("{amount_beviljade_programs}")
 
                 with tgb.part(class_name="container"):
-                    tgb.text("Beviljandegrad för program", class_name="container")
+                    tgb.text("Beviljandegrad för program")
                     with tgb.part(class_name="card"):
                         tgb.text("{percentage_programs}")
 
@@ -412,12 +453,12 @@ with tgb.Page() as page:
             with tgb.layout(columns=("1 1 1")):
 
                 with tgb.part(class_name="container"):
-                    tgb.text("Antal ansökta platser program", class_name="container")
+                    tgb.text("Antal ansökta platser program")
                     with tgb.part(class_name="card"):
                         tgb.text("{sokta_platser}")
 
                 with tgb.part(class_name="container"):
-                    tgb.text("Antal beviljande platser program", class_name="container")
+                    tgb.text("Antal beviljande platser program")
                     with tgb.part(class_name="card"):
                         tgb.text("{beviljade_platser}")
 
@@ -425,11 +466,12 @@ with tgb.Page() as page:
                     tgb.text("Beviljandegrad platser program")
                     with tgb.part(class_name="card"):
                         tgb.text("{count_stats}")
-
-            tgb.html("br")
-            with tgb.part(class_name="container"):
-                tgb.text("## DATA PROGRAMS", mode="md")
-                tgb.table(data="{display_df_programs}", rebuild=True)
+    
+                  
+    with tgb.part(class_name= "card"):
+        with tgb.part(class_name="container"):
+            tgb.text("## DATA PROGRAMS", mode="md")
+            tgb.table(data="{display_df_programs}", rebuild=True)
 
 
 if __name__ == "__main__":
