@@ -5,7 +5,7 @@ ytick.color: "585B5C"
 
 ### ticks and padding
 xtick.major.pad: 5
-ytick.major.pad: 10
+ytick.major.pad: 5
 xtick.minor.pad: 4
 ytick.minor.pad: 4
 
@@ -23,8 +23,10 @@ axes.labelsize: 10
 axes.titlesize: 12
 axes.labelpad: 7
 axes.linewidth: 1.0
+axes.titlepad: 25
 
 
-axes.edgecolor: "DACECE"
+axes.edgecolor: "9B9696"
 axes.titlecolor: "585B5C"
-axes.facecolor: "#f2f2eb"
+axes.facecolor: "E1E4DA"
+figure.facecolor: "E1E4DA"
