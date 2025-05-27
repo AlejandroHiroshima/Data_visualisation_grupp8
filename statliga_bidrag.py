@@ -5,41 +5,8 @@ from pathlib import Path
 
 DATA_DIRECTORY = Path(__file__).parents[0] / "data"
 
-
-#funktioner:
-
-def read_excel(sub_category, file_name, skiprows=5, skipfooter=4): # 1
-    file_path = DATA_DIRECTORY / sub_category / file_name
-    return pd.read_excel(
-        file_path,
-        skiprows=skiprows,
-        skipfooter=skipfooter
-    )
-
-def clean_df(df):
-    index = df.columns[0]
-    df = df.set_index(index)
-    return df
-
-def clean_columns(column):
-    if isinstance(column, int):
-        return column  
-    new_column = column.replace(",", "")
-    try: 
-        return int(new_column)
-    except ValueError:
-        return column
-
-
-try:
-    df = read_excel(sub_category="statliga_bidrag", file_name="ek_4_utbet_arsplatser_utbomr.xlsx")
-    df= clean_df(df)
-except FileNotFoundError as e:
-    print(f"Fel: {e}")
-    df = pd.DataFrame()
-
 #initiera variabler:
-educational_area = list(df.index[:-2])
+
 schablon_moms = {
     "Data/IT": 74100,
     "Ekonomi, administration och försäljning": 66600,
@@ -58,11 +25,44 @@ schablon_moms = {
 }
 selected_educational_area = ""
 year = ""
-df.columns = list(map(clean_columns, df.columns))
-years = df.columns
 year_students = "-"
 schablon = "-"
 government_funding = "-"
+
+#funktioner:
+
+def read_excel(sub_category, file_name, skiprows=5, skipfooter=4): # 1
+    file_path = DATA_DIRECTORY / sub_category / file_name
+    return pd.read_excel(
+        file_path,
+        skiprows=skiprows,
+        skipfooter=skipfooter
+    )
+
+def clean_df(df):
+    index = df.columns[0]
+    df = df.set_index(index)
+    return df
+
+try:
+    df = read_excel(sub_category="statliga_bidrag", file_name="ek_4_utbet_arsplatser_utbomr.xlsx")
+    df= clean_df(df)
+except FileNotFoundError as e:
+    print(f"Fel: {e}")
+    df = pd.DataFrame() 
+
+def clean_columns(column):
+    if isinstance(column, int):
+        return column  
+    new_column = column.replace(",", "")
+    try: 
+        return int(new_column)
+    except ValueError:
+        return column
+
+educational_area = list(df.index[:-2])
+years = df.columns
+df.columns = list(map(clean_columns, df.columns))
 
 # Filter funktion
 def filter_data(state):
@@ -119,17 +119,6 @@ with tgb.Page() as government_grant_per_program:
 if __name__ == "__main__":
     Gui(
         government_grant_per_program,
-        [
-            df,
-            educational_area,
-            schablon_moms,
-            selected_educational_area,
-            year,
-            years,
-            year_students,
-            schablon,
-            government_funding
-        ],
         css_file="assets/style.css"
     ).run(
         dark_mode=False,
