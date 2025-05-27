@@ -7,6 +7,16 @@ import plotly.express as px
 
 DATA_DIRECTORY = Path(__file__).parents[0] / "data"
 
+#initiera variabler
+start_year = ""
+end_year = ""
+selected_educational_area = []
+kpi_mean = "-"
+kpi_peak_year = "-"
+kpi_peak_year_value = "-"
+kpi_top_area = "-"
+kpi_top_area_value = "-"
+
 #funktioner
 def read_csv(sub_category, file_name, separator = ';'): # 1
     file_path = DATA_DIRECTORY / sub_category / file_name
@@ -16,7 +26,13 @@ def read_csv(sub_category, file_name, separator = ';'): # 1
         file_path,
         encoding=result['encoding'],
         sep=separator
-    )
+    ) 
+
+try:
+    df = read_csv(sub_category="2024_kurser", file_name="studerande_examinerad_yrkeshogskola.csv")
+except FileNotFoundError as e:
+    print(f"Fel: {e}")
+    df = pd.DataFrame()
 
 def clean_dataframe(df): # 2
     df = df.query("kön == 'totalt'")
@@ -26,6 +42,11 @@ def clean_dataframe(df): # 2
     for year in df.columns[3:]:   
         df[year] = pd.to_numeric(df[year].str.replace('..', '0'), errors='coerce')
     return df.set_index("Utbildningens Inriktning")
+
+df_cleaned = clean_dataframe(df)
+educational_area = df_cleaned.index.tolist()
+years = df_cleaned.columns.tolist()
+valid_end_years = years[1:]
 
 def create_linechart(df, **options): # 5
     if df.empty:
@@ -50,30 +71,7 @@ def create_linechart(df, **options): # 5
         legend_title="Utbildningsinriktning"
     )
     return fig
-
-try:
-    df = read_csv(sub_category="2024_kurser", file_name="studerande_examinerad_yrkeshogskola.csv")
-except FileNotFoundError as e:
-    print(f"Fel: {e}")
-    df = pd.DataFrame()
-
-#initiera variabler
-df_cleaned = clean_dataframe(df)
-years = df_cleaned.columns.tolist()
-start_year = ""
-end_year = ""
-educational_area = df_cleaned.index.tolist()
-selected_educational_area = []
-valid_end_years = years[1:]
 chart = create_linechart(pd.DataFrame()) 
-number_students = 0
-biggest_percentage_change = 0
-kpi_total = "-"
-kpi_mean = "-"
-kpi_peak_year = "-"
-kpi_peak_year_value = "-"
-kpi_top_area = "-"
-kpi_top_area_value = "-"
 
 #filter funktioner
 def update_end_year(state): # 3
@@ -81,27 +79,22 @@ def update_end_year(state): # 3
         notify(state, "warning", "Välj ett startår först")
         return
     state.valid_end_years = [year for year in state.years if int(year) > int(state.start_year)]
-    # state.end_year = state.start_year + 1
     if not state.end_year or int(state.end_year) < int(state.start_year):
-        state.end_year = state.valid_end_years[0] #if state.valid_end_years else state.start_year
+        state.end_year = state.valid_end_years[0] 
 
 def filter_data(state): # 4
     if not state.start_year or not state.end_year:
         notify(state, "warning", "Välj både start och slutår")
         state.chart = create_linechart(pd.DataFrame())
-        state.number_students = "-"
-        state.kpi_total = "-"
         state.kpi_mean = "-"
         state.kpi_peak_year = "-"
         state.kpi_peak_year_value = "-"
-        state.kpi_top_area = "-"
+        state.kpi_top_area = "-" 
         state.kpi_top_area_value = "-"
         return
     if not state.selected_educational_area:
         notify(state, "warning", "Välj minst ett utbildningsområde")
         state.chart = create_linechart(pd.DataFrame())
-        state.number_students = "-"
-        state.kpi_total = "-"
         state.kpi_mean = "-"
         state.kpi_peak_year = "-"
         state.kpi_peak_year_value = "-"
@@ -113,8 +106,6 @@ def filter_data(state): # 4
     filtered_df = filtered_df[selected_years]
     dynamix_xlabel = f"År ({state.start_year} - {state.end_year})"
     state.chart = create_linechart(filtered_df, xlabel=dynamix_xlabel, ylabel="Antal Studerande")
-    state.number_students = int(filtered_df.sum().sum())
-    state.kpi_total = int(filtered_df.sum().sum())
     state.kpi_mean = int(filtered_df.mean().mean())
     year_sums = filtered_df.sum(axis=0)
     state.kpi_peak_year = int(year_sums.idxmax())
@@ -185,26 +176,6 @@ with tgb.Page() as number_students_educationalarea_year:
 if __name__ == "__main__":
     Gui(
         number_students_educationalarea_year,
-        [
-            df_cleaned,
-            years,
-            start_year,
-            end_year,
-            educational_area,
-            selected_educational_area,
-            valid_end_years,
-            chart,
-            filter_data,
-            update_end_year,
-            number_students,
-            biggest_percentage_change,
-            kpi_total,
-            kpi_mean,
-            kpi_peak_year,
-            kpi_peak_year_value,
-            kpi_top_area,
-            kpi_top_area_value
-        ],
         css_file="assets/style.css"
     ).run(
         dark_mode=False,
