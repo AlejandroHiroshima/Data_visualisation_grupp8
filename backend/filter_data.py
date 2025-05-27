@@ -1,4 +1,6 @@
 import pandas as pd
+from taipy.gui import Gui, notify
+from frontend.charts_utils import create_linechart
 
 # == filter desicion anordnare Marcus ===
 def filter_desicion(filtered):
@@ -15,7 +17,37 @@ def filter_data_marcus(df, state):
 
     return filtered
 
-
+def filter_data(state): # 4
+    if not state.start_year or not state.end_year:
+        notify(state, "warning", "Välj både start och slutår")
+        state.chart = create_linechart(pd.DataFrame())
+        state.kpi_mean = "-"
+        state.kpi_peak_year = "-"
+        state.kpi_peak_year_value = "-"
+        state.kpi_top_area = "-" 
+        state.kpi_top_area_value = "-"
+        return
+    if not state.selected_educational_area:
+        notify(state, "warning", "Välj minst ett utbildningsområde")
+        state.chart = create_linechart(pd.DataFrame())
+        state.kpi_mean = "-"
+        state.kpi_peak_year = "-"
+        state.kpi_peak_year_value = "-"
+        state.kpi_top_area = "-"
+        state.kpi_top_area_value = "-"
+        return
+    filtered_df = state.df_cleaned.loc[state.selected_educational_area]
+    selected_years = [year for year in state.years if int(year) >= int(state.start_year) and int(year) <= int(state.end_year)]
+    filtered_df = filtered_df[selected_years]
+    dynamix_xlabel = f"År ({state.start_year} - {state.end_year})"
+    state.chart = create_linechart(filtered_df, xlabel=dynamix_xlabel, ylabel="Antal Studerande")
+    state.kpi_mean = int(filtered_df.mean().mean())
+    year_sums = filtered_df.sum(axis=0)
+    state.kpi_peak_year = int(year_sums.idxmax())
+    state.kpi_peak_year_value = int(year_sums.max())
+    area_sums = filtered_df.sum(axis=1)
+    state.kpi_top_area = str(area_sums.idxmax())
+    state.kpi_top_area_value = int(area_sums.max())
 
 
 
