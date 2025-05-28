@@ -33,7 +33,7 @@ try:
     df = read_csv_alex(sub_category="2024_kurser", file_name="studerande_examinerad_yrkeshogskola.csv")
 except FileNotFoundError as e:
     print(f"Fel: {e}")
-    df = pd.DataFrame()
+    df = pd.DataFrame() 
 
 # def clean_dataframe(df): # 2
 #     df = df.query("kön == 'totalt'")
