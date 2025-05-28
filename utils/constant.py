@@ -3,8 +3,22 @@ DATA_DIRECTORY = Path(__file__).parents[1] /"data"
 EXPORTED_FILES_DIRECTORY = DATA_DIRECTORY / "save_data"
 GEOJSON_REGIONS =  DATA_DIRECTORY / "geojson" / "swedish_regions.geojson"
 
-
-
+SCHABLON_MOMS = {
+    "Data/IT": 74100,
+    "Ekonomi, administration och försäljning": 66600,
+    "Friskvård och kroppsvård": 79200,
+    "Hotell, restaurang och turism":68700,
+    "Hälso- och sjukvård samt socialt arbete": 7100,
+    "Journalistik och information": 70600,
+    "Juridik": 64100,
+    "Kultur, media och design": 89400,
+    "Lantbruk, djurvård, trädgård, skog och fiske":116700,
+    "Pedagogik och undervisning": 75500,
+    "Samhällsbyggnad och byggteknik": 74600,
+    "Säkerhetstjänster": 66800,
+    "Teknik och tillverkning": 91000,
+    "Transporttjänster": 85200
+}
 
 GRAY_1 = "#CCCCCC"
 GRAY_2 = "#657072"

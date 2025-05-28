@@ -1,44 +1,15 @@
 import taipy.gui.builder as tgb
 from taipy.gui import Gui, notify
 import pandas as pd
-from utils.constant import DATA_DIRECTORY
+from utils.constant import SCHABLON_MOMS
+from backend.data_processing import read_excel, clean_df, clean_columns
 
-schablon_moms = {
-    "Data/IT": 74100,
-    "Ekonomi, administration och försäljning": 66600,
-    "Friskvård och kroppsvård": 79200,
-    "Hotell, restaurang och turism":68700,
-    "Hälso- och sjukvård samt socialt arbete": 7100,
-    "Journalistik och information": 70600,
-    "Juridik": 64100,
-    "Kultur, media och design": 89400,
-    "Lantbruk, djurvård, trädgård, skog och fiske":116700,
-    "Pedagogik och undervisning": 75500,
-    "Samhällsbyggnad och byggteknik": 74600,
-    "Säkerhetstjänster": 66800,
-    "Teknik och tillverkning": 91000,
-    "Transporttjänster": 85200
-}
+
 selected_educational_area = ""
 year = ""
 year_students = "-"
 schablon = "-"
 government_funding = "-"
-
-#funktioner:
-
-def read_excel(sub_category, file_name, skiprows=5, skipfooter=4): # 1
-    file_path = DATA_DIRECTORY / sub_category / file_name
-    return pd.read_excel(
-        file_path,
-        skiprows=skiprows,
-        skipfooter=skipfooter
-    )
-
-def clean_df(df):
-    index = df.columns[0]
-    df = df.set_index(index)
-    return df
 
 try:
     df = read_excel(sub_category="statliga_bidrag", file_name="ek_4_utbet_arsplatser_utbomr.xlsx")
@@ -47,20 +18,10 @@ except FileNotFoundError as e:
     print(f"Fel: {e}")
     df = pd.DataFrame() 
 
-def clean_columns(column):
-    if isinstance(column, int):
-        return column  
-    new_column = column.replace(",", "")
-    try: 
-        return int(new_column)
-    except ValueError:
-        return column
-
 educational_area = list(df.index[:-2])
 years = df.columns
 df.columns = list(map(clean_columns, df.columns))
 
-# Filter funktion
 def filter_data(state):
     if not state.selected_educational_area:
         notify(state, "warning", "Välj ett Utbildningsområde")
@@ -68,7 +29,7 @@ def filter_data(state):
     if not state.year:
         notify(state, "warning", "Välj ett År")
     state.year_students = df.loc[state.selected_educational_area, int(state.year)]
-    state.schablon = schablon_moms[state.selected_educational_area]
+    state.schablon = SCHABLON_MOMS[state.selected_educational_area]
     state.government_funding = state.year_students * state.schablon
 
 with tgb.Page() as government_grant_per_program:
