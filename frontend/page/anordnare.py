@@ -1,8 +1,8 @@
 from taipy.gui import Gui
 import taipy.gui.builder as tgb
 import pandas as pd
-from Backend.data_processing import reading_file_course, reading_file_programs
-from Backend.update import change_data, update_year
+from backend.data_processing import reading_file_course, reading_file_programs
+from backend.update import change_data, update_year
 
 
 

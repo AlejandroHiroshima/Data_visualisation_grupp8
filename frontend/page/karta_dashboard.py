@@ -1,6 +1,6 @@
 import taipy.gui.builder as tgb
 from frontend.frontend_map import create_map
-from Backend.data_processing import df 
+from backend.data_processing import df 
 
 # ===== Global variables =====
 selected_year = 2020
