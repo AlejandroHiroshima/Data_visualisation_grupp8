@@ -115,10 +115,72 @@ b, strong {
     margin-top: 0.5rem;
 }
 
-/* body {
-    background-color: #E9CC7C !important;
+
+@media (prefers-color-scheme: dark) {
+    .js-plotly-plot .plotly .xgrid,
+    .js-plotly-plot .plotly .ygrid {
+        display: none !important;
+    }
 }
 
-.container {
+.js-plotly-plot .plotly .legendtitle {
+    background-color: rgb(17, 17, 17) !important;
+    color: white !important; 
+}
+
+.taipy-menu .Mui-selected,
+.taipy-menu .MuiListItem-root.Mui-selected,
+.taipy-menu .MuiListItem-root.Mui-selected:hover {
     background-color: #E9CC7C !important;
-} */
+    color: #000 !important; 
+}
+
+.taipy-menu .MuiListItem-root:hover {
+    background-color: rgba(233, 204, 124, 0.2) !important;
+    color: #E9CC7C !important;
+}
+
+/* Vald flik i navbar */
+.taipy-navbar .MuiTabs-root .MuiTabs-flexContainer button.Mui-selected {
+    background-color: #E9CC7C !important;
+    color: #000 !important;
+    border-radius: 20px 20px 0 0 !important; /* Öka värdet för mer rundning */
+    box-shadow: 0 12px 22px 0 rgba(233, 204, 124, 0.4) !important;
+}
+
+/* Hover-effekt för flikar (valda och icke-valda) */
+.taipy-navbar .MuiTabs-root .MuiTabs-flexContainer button:hover {
+    background-color: rgba(233, 204, 124, 0.2) !important; /* Ljusare bakgrund vid hover */
+    color: #000 !important; /* Svart text vid hover */
+}
+
+.taipy-navbar .MuiTabs-indicator {
+    background: linear-gradient(
+        to top,
+        #E9CC7C 70%,
+        rgba(233, 204, 124, 0.0) 100%
+    ) !important;
+    border-radius: 10px 10px 0 0 !important; /* Minska värdet för att matcha fliken */
+    box-shadow: 0 8px 16px 0 rgba(233, 204, 124, 0.4) !important;
+    height: 8px !important;
+}
+
+.taipy-toggle .MuiToggleButton-root.Mui-selected {
+    background-color: #E9CC7C !important;
+    color: #000 !important;
+    border-color: #E9CC7C !important;
+}
+
+.taipy-toggle .MuiToggleButton-root:not(.Mui-selected):hover {
+    background-color: rgba(233, 204, 124, 0.15) !important;
+    color: #E9CC7C !important;
+    border-color: #E9CC7C !important;
+    border-radius: 10px 10px 0 0 !important;
+}
+
+.taipy-toggle .MuiToggleButton-root.Mui-selected:hover {
+    background-color: #d0b25c !important;
+    color: #000 !important;
+    border-color: #d0b25c !important;
+    border-radius: 10px 10px 0 0 !important;
+}

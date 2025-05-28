@@ -54,7 +54,7 @@ def change_data(state):
     if not state.year or not state.selected_organizer:
 
         # print("⚠️ Abryter - år eller anordnare inte valt")
-        notify(state, "⚠️Warning", "Vänligen välj år och anorndare")
+        notify(state, "warning", "Vänligen välj år och anorndare")
 
         return
 

@@ -12,14 +12,13 @@ def filter_desicion(filtered):
 
 # == End ===
 
-# == 
 def filter_data_marcus(df, state):
     
     filtered = df.query("`Anordnare namn` == @state.selected_organizer")
 
     return filtered
 
-def filter_data(state): # 4
+def filter_data(state): 
     if not state.start_year or not state.end_year:
         notify(state, "warning", "Välj både start och slutår")
         state.chart = create_linechart(pd.DataFrame())

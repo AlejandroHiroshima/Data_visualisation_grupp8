@@ -21,7 +21,7 @@ def horizontal_bar_options(ax, **options):
 
 
 # === Alex line chart func ===
-def create_linechart(df, **options): # 5
+def create_linechart(df, **options):
     if df.empty:
         df_long = pd.DataFrame(columns=["Utbildningens Inriktning", "År", "Antal studerande"])
     else:
@@ -39,7 +39,8 @@ def create_linechart(df, **options): # 5
         labels={"År": options.get("xlabel", "År"), "Antal studerande": options.get("ylabel", "Antal studerande")},
     )
     fig.update_layout( 
-        plot_bgcolor="white",
+        plot_bgcolor= "rgb(17,17,17)",
+        paper_bgcolor = "rgb(17,17,17)",
         margin=dict(t=0, l=40, r=30, b=50),
         legend_title="Utbildningsinriktning"
     )
