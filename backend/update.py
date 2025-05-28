@@ -75,9 +75,9 @@ def change_data(state):
         print("Fel change_data:", e)
 
     # Filter on selecte organinazer courses
-    filtered = filter_data_marcus(state, dff)      # ändrade, om det inte fungerar
+    filtered = filter_data_marcus(dff, state)      
     # Filter on selectro organizer programs
-    filtered_programs = filter_data_marcus(state, dff_programs) # ändrade, om det inte fungerar
+    filtered_programs = filter_data_marcus(dff_programs, state) 
 
     # Uppdaera tabellens innehåll
     state.display_df_courses = filtered
