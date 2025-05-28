@@ -1,9 +1,9 @@
 import taipy.gui.builder as tgb
 from taipy.gui import Gui, notify
 import pandas as pd
-from utils.constant import SCHABLON_MOMS
-from backend.data_processing import read_excel, clean_df, clean_columns
-
+from backend.data_processing import clean_columns
+from backend.data_loader import load_funding_data
+from backend.filter_data import filter_data_funding
 
 selected_educational_area = ""
 year = ""
@@ -11,26 +11,11 @@ year_students = "-"
 schablon = "-"
 government_funding = "-"
 
-try:
-    df = read_excel(sub_category="statliga_bidrag", file_name="ek_4_utbet_arsplatser_utbomr.xlsx")
-    df= clean_df(df)
-except FileNotFoundError as e:
-    print(f"Fel: {e}")
-    df = pd.DataFrame() 
+df = load_funding_data()
 
 educational_area = list(df.index[:-2])
 years = df.columns
 df.columns = list(map(clean_columns, df.columns))
-
-def filter_data(state):
-    if not state.selected_educational_area:
-        notify(state, "warning", "Välj ett Utbildningsområde")
-        return
-    if not state.year:
-        notify(state, "warning", "Välj ett År")
-    state.year_students = df.loc[state.selected_educational_area, int(state.year)]
-    state.schablon = SCHABLON_MOMS[state.selected_educational_area]
-    state.government_funding = state.year_students * state.schablon
 
 with tgb.Page() as government_grant_per_program:
     tgb.toggle(theme=True)
@@ -57,7 +42,7 @@ with tgb.Page() as government_grant_per_program:
                 with tgb.part(class_name="text-center"):
                     tgb.button(label="Filtrera",
                                class_name="plain filter-button government_button",
-                               on_action=filter_data)
+                               on_action=filter_data_funding)
 
     with tgb.part(class_name="container government"):
         with tgb.layout(columns="1 1 1"): 

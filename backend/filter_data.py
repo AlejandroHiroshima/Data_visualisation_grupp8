@@ -1,6 +1,8 @@
 import pandas as pd
-from taipy.gui import Gui, notify
+from taipy.gui import notify
 from frontend.charts_utils import create_linechart
+from utils.constant import SCHABLON_MOMS
+
 
 # == filter desicion anordnare Marcus ===
 def filter_desicion(filtered):
@@ -50,4 +52,17 @@ def filter_data(state): # 4
     state.kpi_top_area_value = int(area_sums.max())
 
 
+def filter_data_funding(state):
+    if not state.selected_educational_area:
+        notify(state, "warning", "Välj ett Utbildningsområde")
+        return
+    if not state.year:
+        notify(state, "warning", "Välj ett År")
+    try:
+        state.year_students = state.df.loc[state.selected_educational_area, int(state.year)]
+        state.schablon = SCHABLON_MOMS[state.selected_educational_area]
+        state.government_funding = state.year_students * state.schablon
+    except Exception as e:
+        notify(state, "error", f"Ett fel uppstod: {str(e)}")
+       
 
