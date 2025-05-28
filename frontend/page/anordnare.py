@@ -123,11 +123,7 @@ with tgb.Page() as Organizer:
                             class_name="kpi-value",
                         )
 
-    # # data set for courses
-    # with tgb.part(class_name= "card"):
-    #     tgb.text("## DATA KURSER", mode="md")
-    #     tgb.html("br")
-    #     tgb.table(data="{display_df_courses}", rebuild=True)
+
 
     with tgb.part(class_name="container"):
         with tgb.part(class_name="card card-margin"):
@@ -174,12 +170,3 @@ with tgb.Page() as Organizer:
                 with tgb.part(class_name="card card-margin text-center"):
                     tgb.text("### Beviljandegrad platser", mode="md")
                     tgb.text("**{count_stats}**", mode="md", class_name="kpi-value")
-
-    # with tgb.part(class_name= "card"):
-    #     with tgb.part(class_name="container"):
-    #         tgb.text("## DATA PROGRAMS", mode="md")
-    #         tgb.table(data="{display_df_programs}", rebuild=True)
-
-
-if __name__ == "__main__":
-    Gui(page, css_file="style.css").run(dark_mode=False, use_reloader=False, port=8080)

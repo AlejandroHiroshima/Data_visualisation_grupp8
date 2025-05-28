@@ -45,7 +45,7 @@ def update_year(state):
     else:
         print("❌ ÅR {state.year} finns inte i globala_dict_programs")
         
-# === End ===
+
 
 
 def change_data(state):
@@ -75,9 +75,9 @@ def change_data(state):
         print("Fel change_data:", e)
 
     # Filter on selecte organinazer courses
-    filtered = filter_data_marcus(dff, state)
+    filtered = filter_data_marcus(state, dff)      # ändrade, om det inte fungerar
     # Filter on selectro organizer programs
-    filtered_programs = filter_data_marcus(dff_programs, state)
+    filtered_programs = filter_data_marcus(state, dff_programs) # ändrade, om det inte fungerar
 
     # Uppdaera tabellens innehåll
     state.display_df_courses = filtered
@@ -112,6 +112,8 @@ def change_data(state):
         state.amount_beviljade_programs, state.total_applied_programs
     )
     state.count_stats = count_percentage(state.beviljade_platser, state.sokta_platser)
+    
+    # === End ===
 
     # === Alex start ===
 
