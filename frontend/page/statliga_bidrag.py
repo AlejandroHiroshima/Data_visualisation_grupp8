@@ -1,11 +1,7 @@
 import taipy.gui.builder as tgb
 from taipy.gui import Gui, notify
 import pandas as pd
-from pathlib import Path
-
-DATA_DIRECTORY = Path(__file__).parents[0] / "data"
-
-#initiera variabler:
+from utils.constant import DATA_DIRECTORY
 
 schablon_moms = {
     "Data/IT": 74100,
