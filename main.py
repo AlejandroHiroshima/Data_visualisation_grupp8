@@ -6,7 +6,10 @@ from frontend.page.alex_main import number_students_educationalarea_year
 from frontend.page.statliga_bidrag import government_grant_per_program
 
 
-pages = {"Hem": home_page, "karta": map_page, "Anordnare": Organizer, "Studenter_per_utbildningsområde": number_students_educationalarea_year, "Statsbidrag": government_grant_per_program}
+
+
+pages = {"Hem": home_page, "Karta": map_page,"Anordnare": Organizer, "Studenter_per_utbildningsområde": number_students_educationalarea_year, "Statsbidrag": government_grant_per_program}
+
 
 if __name__=="__main__":
     Gui(pages=pages, css_file= "assets/style.css").run(port=8080, dark_mode=False, use_reloader=True)

@@ -5,7 +5,7 @@ import chardet
 
 # ===== 1. Ladda data =====
 df = pd.read_csv(EXPORTED_FILES_DIRECTORY / "regions_2020_2024_log.csv")
-with open(GEOJSON_REGIONS, "r") as file:
+with open(GEOJSON_REGIONS, "r", encoding= "utf-8") as file:
     geojson = json.load(file)
 
 
