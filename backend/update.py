@@ -2,6 +2,8 @@ from backend.data_processing import reading_file_programs, reading_file_course
 from backend.filter_data import filter_data_marcus, filter_desicion
 from taipy.gui import notify
 from backend.calculation import check_zero, count_approved_spots, count_percentage
+from frontend.charts_utils import create_linechart
+import pandas as pd
 
 #  === Dataframe global programs anordnare Marcus === 
 global_dict_programs = reading_file_programs()
@@ -110,3 +112,14 @@ def change_data(state):
         state.amount_beviljade_programs, state.total_applied_programs
     )
     state.count_stats = count_percentage(state.beviljade_platser, state.sokta_platser)
+
+    # === Alex start ===
+
+def update_end_year(state): # 3
+    if not state.start_year:
+        notify(state, "warning", "Välj ett startår först")
+        return
+    state.valid_end_years = [year for year in state.years if int(year) > int(state.start_year)]
+    if not state.end_year or int(state.end_year) < int(state.start_year):
+        state.end_year = state.valid_end_years[0] 
+

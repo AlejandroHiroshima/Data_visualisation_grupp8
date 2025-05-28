@@ -1,6 +1,7 @@
 import pandas as pd
 import json
 from utils.constant import GEOJSON_REGIONS, EXPORTED_FILES_DIRECTORY, DATA_DIRECTORY
+import chardet
 
 # ===== 1. Ladda data =====
 df = pd.read_csv(EXPORTED_FILES_DIRECTORY / "regions_2020_2024_log.csv")
@@ -148,3 +149,24 @@ def reading_file_course():
     return dict_courses
 
 # === End ===
+
+# === Alex start ===
+
+def read_csv_alex(sub_category, file_name, separator = ';'): # 1
+    file_path = DATA_DIRECTORY / sub_category / file_name
+    with open(file_path, 'rb') as f:
+        result = chardet.detect(f.read())
+    return pd.read_csv(
+        file_path,
+        encoding=result['encoding'],
+        sep=separator
+    ) 
+
+def clean_dataframe(df): # 2
+    df = df.query("kön == 'totalt'")
+    df = df.query("ålder == 'totalt'")
+    df = df.drop(["ålder", "kön"], axis=1)
+    df.rename(columns={'utbildningens inriktning': 'Utbildningens Inriktning'}, inplace = True)
+    for year in df.columns[3:]:   
+        df[year] = pd.to_numeric(df[year].str.replace('..', '0'), errors='coerce')
+    return df.set_index("Utbildningens Inriktning")
