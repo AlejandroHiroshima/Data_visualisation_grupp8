@@ -152,7 +152,7 @@ def reading_file_course():
 
 # === Alex start ===
 
-def read_csv_alex(sub_category, file_name, separator = ';'): # 1
+def read_csv_alex(sub_category, file_name, separator = ';'): 
     file_path = DATA_DIRECTORY / sub_category / file_name
     with open(file_path, 'rb') as f:
         result = chardet.detect(f.read())
@@ -162,7 +162,7 @@ def read_csv_alex(sub_category, file_name, separator = ';'): # 1
         sep=separator
     ) 
 
-def clean_dataframe(df): # 2
+def clean_dataframe(df):
     df = df.query("kön == 'totalt'")
     df = df.query("ålder == 'totalt'")
     df = df.drop(["ålder", "kön"], axis=1)
@@ -170,3 +170,25 @@ def clean_dataframe(df): # 2
     for year in df.columns[3:]:   
         df[year] = pd.to_numeric(df[year].str.replace('..', '0'), errors='coerce')
     return df.set_index("Utbildningens Inriktning")
+
+def read_excel(sub_category, file_name, skiprows=5, skipfooter=4): 
+    file_path = DATA_DIRECTORY / sub_category / file_name
+    return pd.read_excel(
+        file_path,
+        skiprows=skiprows,
+        skipfooter=skipfooter
+    )
+
+def clean_df(df):
+    index = df.columns[0]
+    df = df.set_index(index)
+    return df
+
+def clean_columns(column):
+    if isinstance(column, int):
+        return column  
+    new_column = column.replace(",", "")
+    try: 
+        return int(new_column)
+    except ValueError:
+        return column
