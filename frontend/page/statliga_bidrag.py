@@ -18,6 +18,7 @@ years = df.columns
 df.columns = list(map(clean_columns, df.columns))
 
 with tgb.Page() as government_grant_per_program:
+    tgb.navbar()
     tgb.toggle(theme=True)
     with tgb.part(class_name="card text-center card-margin"):
         tgb.text("# Statliga bidrag per **Utbildningsområde** ", mode="md")

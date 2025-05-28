@@ -29,6 +29,7 @@ valid_end_years = years[1:]
 chart = create_linechart(pd.DataFrame()) 
 
 with tgb.Page() as number_students_educationalarea_year:
+    tgb.navbar()
     tgb.toggle(theme=True)
     with tgb.part(class_name="card text-center card-margin"):
         tgb.text("# Studenter på **Yrkeshögskola**", mode="md")
