@@ -8,7 +8,7 @@ from frontend.page.statliga_bidrag import government_grant_per_program
 
 
 
-pages = {"Hem": home_page, "Anordnare": Organizer, "Karta": map_page, "Studenter per utbildningsområde": number_students_educationalarea_year, "Statsbidrag": government_grant_per_program}
+pages = {"Hem": home_page, "Anordnare": Organizer, "Karta": map_page, "Studenter_per_utbildningsområde": number_students_educationalarea_year, "Statsbidrag": government_grant_per_program}
 
 if __name__=="__main__":
     Gui(pages=pages).run(port=8080, dark_mode=False, use_reloader=True)

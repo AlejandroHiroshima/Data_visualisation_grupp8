@@ -1,9 +1,9 @@
 import taipy.gui.builder as tgb
 from taipy.gui import Gui, notify
 import pandas as pd
-from backend.data_processing import clean_columns
-from backend.data_loader import load_funding_data
-from backend.filter_data import filter_data_funding
+from Backend.data_processing import clean_columns
+from Backend.data_loader import load_funding_data
+from Backend.filter_data import filter_data_funding
 
 selected_educational_area = ""
 year = ""
