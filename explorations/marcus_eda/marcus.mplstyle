@@ -5,7 +5,7 @@ ytick.color: "585B5C"
 
 ### ticks and padding
 xtick.major.pad: 5
-ytick.major.pad: 5
+ytick.major.pad: 3
 xtick.minor.pad: 4
 ytick.minor.pad: 4
 
