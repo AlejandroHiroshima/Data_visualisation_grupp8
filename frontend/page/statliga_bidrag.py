@@ -1,6 +1,4 @@
 import taipy.gui.builder as tgb
-from taipy.gui import Gui, notify
-import pandas as pd
 from backend.data_processing import clean_columns
 from backend.data_loader import load_funding_data
 from backend.filter_data import filter_data_funding
@@ -57,16 +55,4 @@ with tgb.Page() as government_grant_per_program:
 
             with tgb.part(class_name="card card-margin text-center"):
                 tgb.text("### Schablonbelopp", mode="md")
-                tgb.text("**{schablon:,.0f}** kr", mode="md", class_name="kpi-value")                    
-
-if __name__ == "__main__":
-    Gui(
-        government_grant_per_program,
-        css_file="assets/style.css"
-    ).run(
-        dark_mode=False,
-        use_reloader=True,
-        port=8080,
-        title="Elvins Dashboard",
-        watermark="Elvins Dashboard"
-    )
+                tgb.text("**{schablon:,.0f}** kr", mode="md", class_name="kpi-value")          
