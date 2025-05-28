@@ -2,9 +2,9 @@ import taipy.gui.builder as tgb
 from taipy.gui import Gui, notify
 import pandas as pd
 from frontend.charts_utils import create_linechart
-from backend.data_processing import read_csv_alex, clean_dataframe
-from backend.filter_data import filter_data
-from backend.update import update_end_year
+from Backend.data_processing import read_csv_alex, clean_dataframe
+from Backend.filter_data import filter_data
+from Backend.update import update_end_year
 
 start_year = ""
 end_year = ""

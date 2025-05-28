@@ -1,7 +1,7 @@
 import plotly.graph_objects as go
 from difflib import get_close_matches
-from backend.data_processing import df
-from backend.data_processing import geojson
+from Backend.data_processing import df
+from Backend.data_processing import geojson
 
 # ===== 3. Hjälpfunktioner =====
 def create_region_maps(df):

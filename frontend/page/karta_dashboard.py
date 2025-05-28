@@ -1,10 +1,10 @@
 import taipy.gui.builder as tgb
 from frontend.frontend_map import create_map
-from backend.data_processing import df 
+from Backend.data_processing import df 
 
 # ===== Global variables =====
 selected_year = 2020
-years = [2020, 2021, 2022, 2023, 2024]
+years = [2024, 2023, 2022, 2021, 2020]
 region_map = None
 
 # ===== Initating KPI-variables =====
