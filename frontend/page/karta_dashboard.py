@@ -2,30 +2,37 @@ import taipy.gui.builder as tgb
 from frontend.frontend_map import create_map
 from Backend.data_processing import df 
 
-# ===== Globala variabler =====
-selected_year = 2024
+# ===== Global variables =====
+selected_year = 2020
 years = [2020, 2021, 2022, 2023, 2024]
 region_map = None
 
-# ===== Initiera KPI-variabler =====
-kpi_total_admitted_sweden = "-"
-kpi_top_region = "-"
-kpi_top_region_value = "-"
-kpi_lowest_region = "-"
-kpi_lowest_region_value = "-"
+# ===== Initating KPI-variables =====
+kpi_total_admitted_sweden = "N/A"
+kpi_top_region = "N/A"
+kpi_top_region_value = "N/A"
+kpi_lowest_region = "N/A"
+kpi_lowest_region_value = "N/A"
 
-# ===== Callback när året ändras =====
+percentage_change = "N/A"
+
+# ===== Callback when the years are changing =====
 def on_year_change(state):
-    # selected_year = str(state.selected_year)  # eller str beroende på dtype
-    print(df)
     year_df = df[f"Antagna {state.selected_year}"]
-    region_df = df["Region"]
+    region_df = df["Region"] 
 
     total = year_df.sum()
     top_row = year_df.iloc[year_df.idxmax()]
     bottom_row = year_df.iloc[year_df.idxmin()]
     top_region = region_df.iloc[year_df.idxmax()]
     bottom_region = region_df.iloc[year_df.idxmin()]
+    
+    base_year_total = df["Antagna 2020"].sum()
+    if base_year_total != 0:
+        percentage = ((total - base_year_total) / base_year_total) * 100
+        state.percentage_change = f"{percentage:.2f}%"
+    else:
+        state.percentage_change = "N/A"
 
     state.kpi_total_admitted_sweden = int(total)
     state.kpi_top_region = top_region
@@ -34,12 +41,12 @@ def on_year_change(state):
     state.kpi_lowest_region_value = int(bottom_row)
 
     state.region_map = create_map(df, state.selected_year)
-
     
-# ===== Initiera första kartan =====
+    
+# ===== Initiating the map =====
 region_map = create_map(df, selected_year)
 
-# ===== GUI-sida =====
+# ===== GUI-site =====
 with tgb.Page() as map_page:
     tgb.navbar()
     with tgb.part(class_name="card text-center card-margin"):
@@ -64,19 +71,22 @@ with tgb.Page() as map_page:
         with tgb.layout(columns="1 1 1"):
             with tgb.part(class_name="card card-margin text-center"):
                 tgb.text("### Totalt antagna", mode="md")
-                tgb.text("**{kpi_total_admitted_sweden}**", mode="md")
+                tgb.text("**Elevantal: {kpi_total_admitted_sweden}**", mode="md")
+                tgb.text("**Procentuell ökning från 2020:**", mode="md")
+                tgb.text("**{percentage_change}**", mode="md")
 
             with tgb.part(class_name="card card-margin text-center"):
                 tgb.text("### Regionen med flest studenter", mode="md")
-                tgb.text("{kpi_top_region}", mode="md")
-                tgb.text("{kpi_top_region_value} studenter", mode="md")
+                tgb.text("**Elevantal: {kpi_top_region_value}**", mode="md")
+                tgb.text("**Region: {kpi_top_region}**", mode="md")
 
             with tgb.part(class_name="card card-margin text-center"):
                 tgb.text("### Minst antagna region", mode="md")
-                tgb.text("{kpi_lowest_region}", mode="md")
-                tgb.text("{kpi_lowest_region_value} studenter", mode="md")
+                tgb.text("**Elevantal: {kpi_lowest_region_value}**",  mode="md")
+                tgb.text("**Region: {kpi_lowest_region}**", mode="md")
+                
                 
     tgb.html("br")                             
-    with tgb.part(class_name="container"):
-        with tgb.part(class_name="card"):
-            tgb.chart(figure="{region_map}",class_name="mx-auto")
+    with tgb.part(class_name="container d-flex justify-content-center py-4"):
+        with tgb.part(class_name="card d-flex justify-content-center align-items-center"):
+            tgb.chart(figure="{region_map}")
