@@ -15,6 +15,8 @@ kpi_lowest_region = "N/A"
 kpi_lowest_region_value = "N/A"
 
 percentage_change = "N/A"
+top_region_share = "N/A"
+bottom_region_share = "N/A"
 
 # ===== Callback when the years are changing =====
 def on_year_change(state):
@@ -33,6 +35,16 @@ def on_year_change(state):
         state.percentage_change = f"{percentage:.2f}%"
     else:
         state.percentage_change = "N/A"
+
+    if total != 0:
+        top_share = (top_row/total) * 100
+        bottom_share = (bottom_row/total) * 100
+        state.top_region_share = f"{top_share:.2f}%"
+        state.bottom_region_share = f"{bottom_share:.2f}%"
+    else:
+        state.top_region_share = "N/A"
+        state.bottom_region_share = "N/A"
+
 
     state.kpi_total_admitted_sweden = int(total)
     state.kpi_top_region = top_region
@@ -79,11 +91,15 @@ with tgb.Page() as map_page:
                 tgb.text("### Regionen med flest studenter", mode="md")
                 tgb.text("**Elevantal: {kpi_top_region_value}**", mode="md")
                 tgb.text("**Region: {kpi_top_region}**", mode="md")
+                tgb.text("**Andel av hela landet: {top_region_share}**", mode="md")
+
 
             with tgb.part(class_name="card card-margin text-center"):
                 tgb.text("### Minst antagna region", mode="md")
                 tgb.text("**Elevantal: {kpi_lowest_region_value}**",  mode="md")
                 tgb.text("**Region: {kpi_lowest_region}**", mode="md")
+                tgb.text("**Andel av hela landet: {bottom_region_share}**", mode="md")
+
                 
                 
     tgb.html("br")                             
