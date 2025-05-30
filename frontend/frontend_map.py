@@ -28,10 +28,12 @@ def create_map(df, year):
         showscale=False,
     ))
     fig.update_layout(
-        mapbox=dict(style="white-bg", zoom=3.3, center=dict(lat=62.7, lon=13.9)),
+        mapbox=dict(style="carto-darkmatter", zoom=3.3, center=dict(lat=62.7, lon=13.9)),
         width=470,
         height=500,
         margin=dict(r=0, l=0, t=50, b=0),
-    )
+        paper_bgcolor= "rgba(0,0,0,0)",
+        plot_bgcolor= "rgba(0,0,0,0)"
+)
     return fig
 
