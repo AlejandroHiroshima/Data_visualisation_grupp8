@@ -13,18 +13,18 @@ global_dict_course = reading_file_course()
 def update_year(state):
 
     try:
-        state.year = int(state.year)
+        state.year_organizer = int(state.year_organizer)
 
     except:
-        print(f"⚠ Ogiltigt årval: {state.year}")
+        print(f"⚠ Ogiltigt årval: {state.year_organizer}")
         return
 
     
 
     # Update selector for anordnare based on year
-    if state.year in global_dict_programs:
+    if state.year_organizer in global_dict_programs:
 
-        df_program = global_dict_programs[state.year]
+        df_program = global_dict_programs[state.year_organizer]
 
        
 
@@ -43,7 +43,7 @@ def update_year(state):
             print("❌ kolumnen 'Anordnare namn' finns inte i dataframe")
 
     else:
-        print("❌ ÅR {state.year} finns inte i globala_dict_programs")
+        print("❌ ÅR {state.year_organizer} finns inte i globala_dict_programs")
         
 
 
@@ -51,7 +51,7 @@ def update_year(state):
 def change_data(state):
     
 
-    if not state.year or not state.selected_organizer:
+    if not state.year_organizer or not state.selected_organizer:
 
         # print("⚠️ Abryter - år eller anordnare inte valt")
         notify(state, "warning", "Vänligen välj år och anorndare")
@@ -62,14 +62,14 @@ def change_data(state):
 
         update_year(state)
 
-        state.year = int(state.year)
+        state.year_organizer = int(state.year_organizer)
 
-        # Pandas get to bring selected year
-        # selected year is to get dataframe based on which year is selected
-        dff_programs = global_dict_programs.get(state.year).copy()
+        # Pandas get to bring selected year_organizer
+        # selected year_organizer is to get dataframe based on which year_organizer is selected
+        dff_programs = global_dict_programs.get(state.year_organizer).copy()
 
         # using get to pick out which dataframe to copy
-        dff = global_dict_course.get(state.year).copy()
+        dff = global_dict_course.get(state.year_organizer).copy()
 
     except Exception as e:
         print("Fel change_data:", e)
@@ -80,8 +80,8 @@ def change_data(state):
     filtered_programs = filter_data_marcus(dff_programs, state) 
 
     # Uppdaera tabellens innehåll
-    state.display_df_courses = filtered
-    state.display_df_programs = filtered_programs
+    # state.display_df_courses = filtered
+    # state.display_df_programs = filtered_programs
 
     # Count KPI:er
     # len to get a number how many row filtered and filtered_programs has.
