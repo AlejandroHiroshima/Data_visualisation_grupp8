@@ -1,0 +1,43 @@
+### FIGURE
+figure.facecolor: EAEAEA
+figure.dpi: 300
+figure.figsize: 10,6
+figure.constrained_layout.use : False
+
+### LINES
+lines.linewidth: 3
+
+### TICKS
+xtick.bottom: False
+ytick.left: False
+
+### FONTS
+font.size: 12
+font.family: sans-serif
+font.sans-serif: Avenir, 'Avenir Next LT Pro', Arial, Helvetica, sans-serif
+font.weight: bold
+
+text.color: "##000000"
+axes.labelcolor: "##000000"
+xtick.color: "##000000"
+ytick.color: "##000000"
+axes.edgecolor: "##000000"
+
+
+# TICK PADDING
+xtick.major.pad : 5
+ytick.major.pad : 10
+xtick.minor.pad : 4
+ytick.minor.pad : 4
+axes.labelpad: 7
+
+### AXES
+axes.linewidth: 1.0
+axes.titlesize: 14
+axes.labelsize: 10
+axes.spines.top: False
+axes.spines.right: False
+axes.labelweight: "bold"
+
+
+
