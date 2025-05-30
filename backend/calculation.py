@@ -2,7 +2,7 @@ import pandas as pd
 from backend.filter_data import filter_desicion
 
 
-
+# === Marcus ====
 def check_zero(a):
 
     # notna to find out if value is nan, return false if it is nan
@@ -11,7 +11,7 @@ def check_zero(a):
 
 
 
-# === counting platser for selected organizer anordnare Marcus ===
+# === counting platser for selected organizer anordnare ===
 def count_approved_spots(filtered):
 
     filtered = filter_desicion(filtered)

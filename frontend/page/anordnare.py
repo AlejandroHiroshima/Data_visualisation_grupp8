@@ -1,4 +1,4 @@
-from taipy.gui import Gui
+# from taipy.gui import Gui
 import taipy.gui.builder as tgb
 import pandas as pd
 from backend.data_processing import reading_file_course, reading_file_programs
@@ -16,11 +16,9 @@ global_dict_programs = reading_file_programs()
 
 
 # Initializ bindings variable
-display_df_courses = pd.DataFrame()
-display_df_programs = pd.DataFrame()
 organizer_list = []
 selected_organizer = None
-year = None
+year_organizer = None
 amount_beviljade_courses = "-"
 total_applied_courses = "-"
 amount_beviljade_programs = "-"
@@ -39,21 +37,21 @@ with tgb.Page() as Organizer:
     tgb.navbar()
     tgb.toggle(theme=True)
     with tgb.part(class_name="card text-center card-margin"):
-        tgb.text("# Kpi:er för **anordnare** på **yrkeshögskolor**", mode="md", raw=True)
-        tgb.text("KPI:erna är baserad på offentliga excel-data över inkomna och beviljade platser för kurser och prgram åren mellan 2020 - 2024. \n Där data för 2020 för kurser så finns det bara beviljade.", mode= "md")
+        tgb.text("# **Anordnare** för **yrkeshögskolor**", mode="md", raw=True)
+        
 
     with tgb.part(class_name="container"):
         with tgb.part(class_name=" card card-margin"):
             with tgb.layout(columns="1 2 1"):
                 with tgb.part():
                     tgb.selector(
-                        value="{year}",
+                        value="{year_organizer}",
                         label="Välj år",
                         lov=[2024, 2023, 2022, 2021, 2020],
                         dropdown=True,
                         on_change=update_year,
                         class_name="fullwidth",
-                        bind="year",
+                        bind="year_organizer",
                     )
 
                 with tgb.part():
@@ -65,7 +63,7 @@ with tgb.Page() as Organizer:
                         filter=True,
                         class_name="fullwidth",
                         bind="selected_organizer",
-                        disabled="year == None or year == ''",
+                        disabled="year_organizer == None or year_organizer == ''",
                     )
 
                 with tgb.part(class_name="text-center"):
@@ -73,14 +71,14 @@ with tgb.Page() as Organizer:
                         label="FILTRERA",
                         class_name="plain filter-button government_button",
                         on_action=change_data,
-                        disabled="{selected_organizer} == None or {selected_organizer} == '' or {year} == None or {year} == ''",
-                        bind=["year", "selected_organizer"],
+                        disabled="{selected_organizer} == None or {selected_organizer} == '' or {year_organizer} == None or {year_organizer} == ''",
+                        bind=["year_organizer", "selected_organizer"],
                     )
 
     with tgb.part(class_name="container"):
         with tgb.part(class_name="card card-margin"):
             tgb.text(
-                "### KPI:er kurser",
+                "### kurser på **{selected_organizer}**",
                 mode="md",
             )
             # start kpi:er, applied courses
@@ -127,7 +125,7 @@ with tgb.Page() as Organizer:
 
     with tgb.part(class_name="container"):
         with tgb.part(class_name="card card-margin"):
-            tgb.text("### KPI:er för program", mode= "md")
+            tgb.text("### Program på **{selected_organizer}**", mode= "md")
 
             # how many programs and approved
             with tgb.layout(columns=("1 1 1")):
@@ -170,3 +168,8 @@ with tgb.Page() as Organizer:
                 with tgb.part(class_name="card card-margin text-center"):
                     tgb.text("### Beviljandegrad platser", mode="md")
                     tgb.text("**{count_stats}**", mode="md", class_name="kpi-value")
+
+
+
+# if __name__=="__main__":
+#     Gui(Organizer).run(dark_mode=True, use_reloader=False, port=8080)
