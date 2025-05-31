@@ -5,7 +5,7 @@ from frontend.page.anordnare import Organizer
 from frontend.page.alex_main import number_students_educationalarea_year
 from frontend.page.statliga_bidrag import government_grant_per_program
 
-
+# page ="current_page"
 
 pages = {
     "Hem": home_page,
@@ -17,7 +17,7 @@ pages = {
 
 
 if __name__ == "__main__":
-    Gui(pages=pages, page ="current_page", css_file="assets/style.css").run(
+    Gui(pages=pages, css_file="assets/style.css").run(
         port=8080,
         dark_mode=True,
         use_reloader=False,

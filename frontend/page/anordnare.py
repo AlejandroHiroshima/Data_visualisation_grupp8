@@ -1,4 +1,4 @@
-# from taipy.gui import Gui
+
 import taipy.gui.builder as tgb
 import pandas as pd
 from backend.data_processing import reading_file_course, reading_file_programs
@@ -63,7 +63,7 @@ with tgb.Page() as Organizer:
                         filter=True,
                         class_name="fullwidth",
                         bind="selected_organizer",
-                        disabled="year_organizer == None or year_organizer == ''",
+                        disabled="year_organizer == '' or year_organizer == ''",
                     )
 
                 with tgb.part(class_name="text-center"):
@@ -71,7 +71,7 @@ with tgb.Page() as Organizer:
                         label="FILTRERA",
                         class_name="plain filter-button government_button",
                         on_action=change_data,
-                        disabled="{selected_organizer} == None or {selected_organizer} == '' or {year_organizer} == None or {year_organizer} == ''",
+                        disabled="{selected_organizer} == None or {selected_organizer} == '' or {year_organizer} == '' or {year_organizer} == ''",
                         bind=["year_organizer", "selected_organizer"],
                     )
 
@@ -168,8 +168,3 @@ with tgb.Page() as Organizer:
                 with tgb.part(class_name="card card-margin text-center"):
                     tgb.text("### Beviljandegrad platser", mode="md")
                     tgb.text("**{count_stats}**", mode="md", class_name="kpi-value")
-
-
-
-# if __name__=="__main__":
-#     Gui(Organizer).run(dark_mode=True, use_reloader=False, port=8080)

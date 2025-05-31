@@ -44,6 +44,19 @@ def update_year(state):
 
     else:
         print("❌ ÅR {state.year_organizer} finns inte i globala_dict_programs")
+    
+    state.amount_beviljade_courses = "-"
+    state.total_applied_courses = "-"
+    state.amount_beviljade_programs = "-"
+    state.total_applied_programs = "-"
+    state.percentage_courses = "-"
+    state.percentage_programs = "-"
+    state.sokta_platser = "-"
+    state.beviljade_platser = "-"
+    state.count_stats = "-"
+    state.course_applied_spots = "-"
+    state.course_approved_spots = "-"
+    state.stats_platser_kurs = "-"
         
 
 
