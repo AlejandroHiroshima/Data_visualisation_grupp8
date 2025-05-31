@@ -184,3 +184,18 @@ b, strong {
     border-color: #d0b25c !important;
     border-radius: 10px 10px 0 0 !important;
 }
+
+/* For picture on home page */
+.hover_color:hover {
+    filter: #E9CC7C !important;
+    background-color: none !important;
+    border: none !important;
+    box-shadow: 0 0 12px 4px rgb(233, 204, 124, 0.8) !important;
+}
+
+.picture_style {
+    border: none !important;
+    box-shadow: 0 0 8px rgba(233, 204, 124, 0.8);
+    outline: none !important;
+    background-color: none !important;
+}
