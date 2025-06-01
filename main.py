@@ -1,11 +1,10 @@
 from taipy.gui import Gui
-from frontend.page.karta_dashboard import map_page
+from frontend.page.map_dashboard import map_page
 from frontend.page.home import home_page
-from frontend.page.anordnare import Organizer
-from frontend.page.alex_main import number_students_educationalarea_year
-from frontend.page.statliga_bidrag import government_grant_per_program
+from frontend.page.organizer import Organizer
+from frontend.page.students import number_students_educationalarea_year
+from frontend.page.government_funding import government_grant_per_program
 
-# page ="current_page"
 
 pages = {
     "Hem": home_page,
