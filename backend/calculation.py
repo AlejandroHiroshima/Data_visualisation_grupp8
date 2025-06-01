@@ -1,5 +1,5 @@
 import pandas as pd
-from backend.filter_data import filter_desicion
+from backend.filter_data import filter_decision
 
 
 # === Marcus ====
@@ -14,7 +14,7 @@ def check_zero(a):
 # === counting platser for selected organizer anordnare ===
 def count_approved_spots(filtered):
 
-    filtered = filter_desicion(filtered)
+    filtered = filter_decision(filtered)
 
     try:
         totala = float(filtered["Totalt antal beviljade platser"].sum())

@@ -1,9 +1,9 @@
 from backend.data_processing import reading_file_programs, reading_file_course
-from backend.filter_data import filter_data_marcus, filter_desicion
+from backend.filter_data import filter_data_marcus, filter_decision
 from taipy.gui import notify
 from backend.calculation import check_zero, count_approved_spots, count_percentage
-from frontend.charts_utils import create_linechart
-import pandas as pd
+
+
 
 #  === Dataframe global programs anordnare Marcus === 
 global_dict_programs = reading_file_programs()
@@ -45,6 +45,13 @@ def update_year(state):
     else:
         print("❌ ÅR {state.year_organizer} finns inte i globala_dict_programs")
     
+   # Reset selector and variable
+    state.educational_area_course = ""
+    state.educational_area_program = ""
+    
+    state.educational_area_list_course = []
+    state.educational_area_list_program = []
+    
     state.amount_beviljade_courses = "-"
     state.total_applied_courses = "-"
     state.amount_beviljade_programs = "-"
@@ -57,9 +64,28 @@ def update_year(state):
     state.course_applied_spots = "-"
     state.course_approved_spots = "-"
     state.stats_platser_kurs = "-"
-        
-
-
+    
+def update_orgnaizer(state):
+    
+      # Reset selector and variable
+    state.educational_area_course = ""
+    state.educational_area_program = ""
+    
+    state.educational_area_list_course = []
+    state.educational_area_list_program = []
+    
+    state.amount_beviljade_courses = "-"
+    state.total_applied_courses = "-"
+    state.amount_beviljade_programs = "-"
+    state.total_applied_programs = "-"
+    state.percentage_courses = "-"
+    state.percentage_programs = "-"
+    state.sokta_platser = "-"
+    state.beviljade_platser = "-"
+    state.count_stats = "-"
+    state.course_applied_spots = "-"
+    state.course_approved_spots = "-"
+    state.stats_platser_kurs = "-"
 
 def change_data(state):
     
@@ -92,9 +118,7 @@ def change_data(state):
     # Filter on selectro organizer programs
     filtered_programs = filter_data_marcus(dff_programs, state) 
 
-    # Uppdaera tabellens innehåll
-    # state.display_df_courses = filtered
-    # state.display_df_programs = filtered_programs
+  
 
     # Count KPI:er
     # len to get a number how many row filtered and filtered_programs has.
@@ -102,14 +126,13 @@ def change_data(state):
     state.total_applied_courses = check_zero(len(filtered))
     state.total_applied_programs = check_zero(len(filtered_programs))
 
-    state.amount_beviljade_courses = check_zero(len(filter_desicion(filtered)))
-    state.amount_beviljade_programs = check_zero(len(filter_desicion(filtered_programs)))
+    state.amount_beviljade_courses = check_zero(len(filter_decision(filtered)))
+    state.amount_beviljade_programs = check_zero(len(filter_decision(filtered_programs)))
 
     state.course_approved_spots = check_zero(count_approved_spots(filtered))
 
     # filtered_programs is the new data
     # sum all in column sökta platser totalt
-    # notna to find out if value is nan, return false if it is nan
     state.sokta_platser = check_zero(filtered_programs["Sökta platser totalt"].sum())
     state.beviljade_platser = check_zero(
         filtered_programs["Beviljade platser totalt"].sum()
@@ -125,6 +148,48 @@ def change_data(state):
         state.amount_beviljade_programs, state.total_applied_programs
     )
     state.count_stats = count_percentage(state.beviljade_platser, state.sokta_platser)
+    
+    try:
+        state.educational_area_list_course = sorted(filtered["Utbildningsområde"].dropna().unique().tolist())
+        state.educational_area_list_program = sorted(filtered_programs["Utbildningsområde"].dropna().unique().tolist())
+        
+    except Exception as e:
+        print(f"❌ Kunde inte uppdatera utbildningsområde för kurser: {e}")
+        state.educational_area_list_course = []
+        print(f"❌ Kunde inte hitta uppdaterad utbildningsområde för program: {e}")
+    
+    
+    
+def update_kpi(state):
+    
+    try:
+        dff= global_dict_course.get(state.year_organizer).copy()
+        dff = filter_data_marcus(dff, state)
+        dff_programs = global_dict_programs.get(state.year_organizer).copy()
+        dff_programs = filter_data_marcus(dff_programs, state)
+        
+        
+        
+        if state.educational_area_course:
+            dff = dff[dff["Utbildningsområde"] == state.educational_area_course]
+            
+        state.total_applied_courses = check_zero(len(dff))
+        state.amount_beviljade_courses = check_zero(len(filter_decision(dff)))
+        state.course_approved_spots = check_zero(count_approved_spots(dff))
+        state.percentage_courses = count_percentage(state.amount_beviljade_courses, state.total_applied_courses)
+        
+        if state.educational_area_program:
+            dff_programs = dff_programs[dff_programs["Utbildningsområde"] == state.educational_area_program]
+            
+        state.amount_beviljade_programs = check_zero(len(filter_decision(dff_programs)))
+        state.total_applied_programs = check_zero(len(dff_programs))
+        state.percentage_programs = count_percentage(state.amount_beviljade_programs, state.total_applied_programs)
+        state.sokta_platser = check_zero(dff_programs["Sökta platser totalt"].sum())
+        state.beviljade_platser = check_zero(dff_programs["Beviljade platser totalt"].sum())
+        state.count_stats = count_percentage(state.beviljade_platser, state.sokta_platser)
+        
+    except Exception as e:
+        print("❌ Kunde inte uppdatera KPI:er vid klick", e)
     
     # === End ===
 
