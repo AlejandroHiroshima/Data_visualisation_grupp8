@@ -1,5 +1,5 @@
 ### FIGURE
-figure.facecolor: EAEAEA
+figure.facecolor: "#f4f4f4"
 figure.dpi: 300
 figure.figsize: 10,6
 figure.constrained_layout.use : False
