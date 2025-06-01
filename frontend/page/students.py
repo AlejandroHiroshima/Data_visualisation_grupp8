@@ -1,5 +1,4 @@
 import taipy.gui.builder as tgb
-# from taipy.gui import Gui
 import pandas as pd
 from frontend.charts_utils import create_linechart
 from backend.data_processing import read_csv_alex, clean_dataframe
@@ -91,5 +90,3 @@ with tgb.Page() as number_students_educationalarea_year:
             tgb.text("### Utveckling över tid per **Utbildningsområde**", mode="md")
             tgb.chart(figure="{chart}")
 
-# if __name__=="__main__":
-#     Gui(number_students_educationalarea_year).run(dark_mode=True, use_reloader=False, port=8080)
