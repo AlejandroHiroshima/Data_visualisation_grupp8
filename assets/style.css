@@ -197,5 +197,8 @@ b, strong {
     border: none !important;
     box-shadow: 0 0 8px rgba(233, 204, 124, 0.8);
     outline: none !important;
-    background-color: none !important;
+    background-color: transparent !important;
+    width: 95%;
+    height: 95%;
+    object-fit: cover;
 }
