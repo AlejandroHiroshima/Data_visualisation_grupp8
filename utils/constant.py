@@ -1,13 +1,13 @@
 from pathlib import Path
 
+# PATH DIRECTORY
+
 DATA_DIRECTORY = Path(__file__).parents[1] / "data"
 EXPORTED_FILES_DIRECTORY = DATA_DIRECTORY / "save_data"
 GEOJSON_REGIONS = DATA_DIRECTORY / "geojson" / "swedish_regions.geojson"
 
 
-
-
-
+# SCHABLOM MOMS
 
 SCHABLON_MOMS = {
     "Data/IT": 74100,
@@ -25,6 +25,8 @@ SCHABLON_MOMS = {
     "Teknik och tillverkning": 91000,
     "Transporttjänster": 85200,
 }
+
+# COLORS FOR STYLING
 
 GRAY_1 = "#CCCCCC"
 GRAY_2 = "#657072"
@@ -77,3 +79,11 @@ BLUE = "#0000FF"
 LIGHT_BLUE = "#66B3FF"
 DARK_BLUE = "#003366"
 PALE_BLUE = "#99CCFF"
+
+SOFT_GRAY = "#f4f4f4"
+PETROL = "#264653"
+SAND_YELLOW = "#e9c46a"
+
+GRAPHITE = "#1c1c1e"
+STEEL_BLUE = "#8ab6d6"
+BRIGHT_YELLOW = "#ffd166"
