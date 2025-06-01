@@ -1,10 +1,6 @@
-
 import taipy.gui.builder as tgb
-import pandas as pd
 from backend.data_processing import reading_file_course, reading_file_programs
-from backend.update import change_data, update_year
-
-
+from backend.update import change_data, update_year, update_kpi, update_orgnaizer
 
 
 # Dataframe global courses
@@ -31,17 +27,20 @@ count_stats = "-"
 course_applied_spots = "-"
 course_approved_spots = "-"
 stats_platser_kurs = "-"
+educational_area_course = ""
+educational_area_list_course = []
+educational_area_list_program = []
+educational_area_program = ""
 
 
 with tgb.Page() as Organizer:
     tgb.navbar()
     tgb.toggle(theme=True)
     with tgb.part(class_name="card text-center card-margin"):
-        tgb.text("# **Anordnare** för **yrkeshögskolor**", mode="md", raw=True)
-        
+        tgb.text("# **Anordnare** för **yrkeshögskolor**", mode="md")
 
     with tgb.part(class_name="container"):
-        with tgb.part(class_name=" card card-margin"):
+        with tgb.part(class_name="card card-margin"):
             with tgb.layout(columns="1 2 1"):
                 with tgb.part():
                     tgb.selector(
@@ -60,6 +59,7 @@ with tgb.Page() as Organizer:
                         label="Välj anordnare",
                         lov="{organizer_list}",
                         dropdown=True,
+                        on_change=update_orgnaizer,
                         filter=True,
                         class_name="fullwidth",
                         bind="selected_organizer",
@@ -77,10 +77,27 @@ with tgb.Page() as Organizer:
 
     with tgb.part(class_name="container"):
         with tgb.part(class_name="card card-margin"):
-            tgb.text(
-                "### kurser på **{selected_organizer}**",
-                mode="md",
-            )
+            with tgb.layout(columns=("2 1")):
+                with tgb.part():
+                    tgb.text(
+                        "### kurser på **{selected_organizer}**",
+                        mode="md",
+                    )
+                with tgb.part():
+                    tgb.selector(
+                        value="{educational_area_course}",
+                        label="Utbildningsområde",
+                        lov="{educational_area_list_course}",
+                        dropdown=True,
+                        class_name="fullwidth",
+                        filter=True,
+                        on_change=update_kpi,
+                        bind=[
+                            "year_organizer",
+                            "selected_organizer",
+                            "educational_area_course",
+                        ],
+                    )
             # start kpi:er, applied courses
             with tgb.part():
                 with tgb.layout(columns=("1 1 1 1")):
@@ -121,11 +138,26 @@ with tgb.Page() as Organizer:
                             class_name="kpi-value",
                         )
 
-
-
     with tgb.part(class_name="container"):
         with tgb.part(class_name="card card-margin"):
-            tgb.text("### Program på **{selected_organizer}**", mode= "md")
+            with tgb.layout(columns=("2 1")):
+                with tgb.part():
+                    tgb.text("### Program på **{selected_organizer}**", mode="md")
+                with tgb.part():
+                    tgb.selector(
+                        value="{educational_area_program}",
+                        label="Utbildningsområde",
+                        lov="{educational_area_list_program}",
+                        dropdown=True,
+                        class_name="fullwidth",
+                        filter=True,
+                        on_change=update_kpi,
+                        bind=[
+                            "year_organizer",
+                            "selected_organizer",
+                            "educational_area_course",
+                        ],
+                    )
 
             # how many programs and approved
             with tgb.layout(columns=("1 1 1")):

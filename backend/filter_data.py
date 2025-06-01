@@ -5,7 +5,7 @@ from utils.constant import SCHABLON_MOMS
 
 
 # == filter desicion anordnare Marcus ===
-def filter_desicion(filtered):
+def filter_decision(filtered):
     filtered = filtered.query("Beslut == 'Beviljad'")
 
     return filtered
